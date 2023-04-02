@@ -1,0 +1,40 @@
+{
+	"name": "Parquet31",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "on-prem-shir"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "Country",
+				"type": "UTF8"
+			},
+			{
+				"name": "CountryCode",
+				"type": "UTF8"
+			},
+			{
+				"name": "Latitude",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 5
+			},
+			{
+				"name": "Longitude",
+				"type": "DECIMAL",
+				"precision": 10,
+				"scale": 5
+			}
+		]
+	}
+}

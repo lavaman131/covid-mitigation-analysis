@@ -1,0 +1,19 @@
+{
+	"name": "Parquet11",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "on-prem-shir"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}
