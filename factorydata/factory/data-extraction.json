@@ -1,0 +1,9 @@
+{
+	"name": "data-extraction",
+	"location": "eastus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "3786cd4a-1dc0-4577-aa27-623f1b4138a6",
+		"tenantId": "d57d32cc-c121-488f-b07b-dfe705680c71"
+	}
+}
