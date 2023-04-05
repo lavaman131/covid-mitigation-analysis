@@ -1,0 +1,7 @@
+{
+	"name": "onpremshir",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "with new vpn config"
+	}
+}
