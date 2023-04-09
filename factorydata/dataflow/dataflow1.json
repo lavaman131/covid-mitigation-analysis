@@ -57,13 +57,13 @@
 			"sinks": [],
 			"transformations": [
 				{
-					"name": "DatesSQL"
+					"name": "combAzureSQL"
 				},
 				{
-					"name": "DatesfromCosmos"
+					"name": "selectcountries"
 				},
 				{
-					"name": "FullDates"
+					"name": "combAzureSQLCosmos"
 				}
 			],
 			"scriptLines": [
@@ -240,13 +240,14 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> OnPremDates",
-				"AzureSQLDates, OnPremDates union(byName: true)~> DatesSQL",
+				"AzureSQLCountry, OnPremCountry union(byName: true)~> combAzureSQL",
 				"CosmosDBPolicy select(mapColumn(",
-				"          FullDate = Date",
+				"          Country = CountryName,",
+				"          CountryCode",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> DatesfromCosmos",
-				"DatesSQL, DatesfromCosmos union(byName: true)~> FullDates"
+				"     skipDuplicateMapOutputs: true) ~> selectcountries",
+				"combAzureSQL, selectcountries union(byName: true)~> combAzureSQLCosmos"
 			]
 		}
 	}
