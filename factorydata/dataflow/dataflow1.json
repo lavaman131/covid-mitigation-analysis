@@ -6,61 +6,57 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Parquet11",
+						"referenceName": "AzureSQLCountry",
 						"type": "DatasetReference"
 					},
 					"name": "AzureSQLCountry"
 				},
 				{
 					"dataset": {
-						"referenceName": "Parquet21",
+						"referenceName": "AzureSQLMetrics",
 						"type": "DatasetReference"
 					},
 					"name": "AzureSQLMetrics"
 				},
 				{
 					"dataset": {
-						"referenceName": "Parquet31",
+						"referenceName": "AzureSQLDates",
 						"type": "DatasetReference"
 					},
 					"name": "AzureSQLDates"
 				},
 				{
 					"dataset": {
-						"referenceName": "CosmosDbNoSqlContainer1",
+						"referenceName": "CosmosDBPolicy",
 						"type": "DatasetReference"
 					},
 					"name": "CosmosDBPolicy"
 				},
 				{
 					"dataset": {
-						"referenceName": "SqlServerTable1",
+						"referenceName": "OnPremCountry",
 						"type": "DatasetReference"
 					},
-					"name": "OnPremTbl1"
+					"name": "OnPremCountry"
 				},
 				{
 					"dataset": {
-						"referenceName": "SqlServerTable2",
+						"referenceName": "OnPremCovid",
 						"type": "DatasetReference"
 					},
-					"name": "OnPremTbl2"
+					"name": "OnPremCovid"
 				},
 				{
 					"dataset": {
-						"referenceName": "SqlServerTable3",
+						"referenceName": "OnPremDates",
 						"type": "DatasetReference"
 					},
-					"name": "OnPremTbl3"
+					"name": "OnPremDates"
 				}
 			],
 			"sinks": [],
 			"transformations": [],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false,",
-				"     format: 'parquet') ~> AzureSQLCountry",
 				"source(output(",
 				"          Country as string,",
 				"          CountryCode as string,",
@@ -70,12 +66,48 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> AzureSQLCountry",
+				"source(output(",
+				"          ID as integer,",
+				"          Updated as date,",
+				"          Confirmed as integer,",
+				"          Confirmed_Change as integer,",
+				"          Deaths as integer,",
+				"          Deaths_Change as integer,",
+				"          Recovered as integer,",
+				"          Recovered_Change as integer,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5),",
+				"          ISO2 as string,",
+				"          ISO3 as string,",
+				"          Country_Region as string,",
+				"          load_time as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> AzureSQLMetrics",
 				"source(output(",
-				"          Country as string,",
-				"          CountryCode as string,",
-				"          Latitude as decimal(10,5),",
-				"          Longitude as decimal(10,5)",
+				"          DateKey as integer,",
+				"          FullDate as date,",
+				"          isWeekDay as boolean,",
+				"          DayOfWeek as integer,",
+				"          DayOfMonth as integer,",
+				"          DayOfQuarter as integer,",
+				"          DayOfYear as integer,",
+				"          DayName as string,",
+				"          WeekOfYear as integer,",
+				"          WeekName as string,",
+				"          MonthOfYear as integer,",
+				"          MonthName as string,",
+				"          CalendarQuarter as integer,",
+				"          CalendarQuarterName as string,",
+				"          CalendarYear as integer,",
+				"          FiscalMonth as integer,",
+				"          FiscalMonthName as string,",
+				"          FiscalQuarter as integer,",
+				"          FiscalQuarterName as string,",
+				"          FiscalYear as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -130,15 +162,28 @@
 				"          ContainmentHealthIndex as integer,",
 				"          ContainmentHealthIndexForDisplay as integer,",
 				"          EconomicSupportIndex as integer,",
-				"          EconomicSupportIndexForDisplay as integer",
+				"          EconomicSupportIndexForDisplay as integer,",
+				"          id as string,",
+				"          {_rid} as string,",
+				"          {_self} as string,",
+				"          {_etag} as string,",
+				"          {_attachments} as string,",
+				"          {_ts} as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     format: 'document') ~> CosmosDBPolicy",
-				"source(allowSchemaDrift: true,",
+				"     ignoreNoFilesFound: false,",
+				"     documentForm: 'documentPerLine') ~> CosmosDBPolicy",
+				"source(output(",
+				"          Country as string,",
+				"          CountryCode as string,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5)",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> OnPremTbl1",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> OnPremCountry",
 				"source(output(",
 				"          ID as integer,",
 				"          Updated as date,",
@@ -157,8 +202,8 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> OnPremTbl2",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> OnPremCovid",
 				"source(output(",
 				"          DateKey as integer,",
 				"          FullDate as date,",
@@ -183,8 +228,8 @@
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> OnPremTbl3"
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> OnPremDates"
 			]
 		}
 	}
