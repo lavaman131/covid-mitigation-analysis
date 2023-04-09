@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "ODS Creation",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
