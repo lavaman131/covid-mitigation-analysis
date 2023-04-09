@@ -55,7 +55,11 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
+			"transformations": [
+				{
+					"name": "union1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          Country as string,",
@@ -229,7 +233,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     format: 'parquet') ~> OnPremDates"
+				"     format: 'parquet') ~> OnPremDates",
+				"AzureSQLCountry, OnPremCountry union(byName: true)~> union1"
 			]
 		}
 	}
