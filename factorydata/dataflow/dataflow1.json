@@ -58,6 +58,12 @@
 			"transformations": [
 				{
 					"name": "union1"
+				},
+				{
+					"name": "selectcountries"
+				},
+				{
+					"name": "union2"
 				}
 			],
 			"scriptLines": [
@@ -234,7 +240,14 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> OnPremDates",
-				"AzureSQLCountry, OnPremCountry union(byName: true)~> union1"
+				"AzureSQLCountry, OnPremCountry union(byName: true)~> union1",
+				"CosmosDBPolicy select(mapColumn(",
+				"          Country = CountryName,",
+				"          CountryCode",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectcountries",
+				"union1, selectcountries union(byName: true)~> union2"
 			]
 		}
 	}
