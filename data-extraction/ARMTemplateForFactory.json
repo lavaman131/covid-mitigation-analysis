@@ -285,6 +285,61 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Data Normalization')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "ODS Creation",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"AzureSQLCountry": {},
+									"AzureSQLMetrics": {},
+									"AzureSQLDates": {},
+									"CosmosDBPolicy": {},
+									"OnPremCountry": {},
+									"OnPremCovid": {},
+									"OnPremDates": {},
+									"sinkFullCountryData": {},
+									"sinkFullDatesData": {},
+									"sinkFullMetricsData": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/ODS Creation')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/OnPremExtraction')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -475,6 +530,244 @@
 				"[concat(variables('factoryId'), '/datasets/Parquet21')]",
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable3')]",
 				"[concat(variables('factoryId'), '/datasets/Parquet31')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSQLCountry')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "dbo.Country.parquet",
+						"container": "azure-sql-db"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "Country",
+						"type": "UTF8"
+					},
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Latitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					},
+					{
+						"name": "Longitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSQLDates')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "dbo.Dates.parquet",
+						"container": "azure-sql-db"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "DateKey",
+						"type": "INT32"
+					},
+					{
+						"name": "FullDate",
+						"type": "DATE"
+					},
+					{
+						"name": "isWeekDay",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "DayOfWeek",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfMonth",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "DayName",
+						"type": "UTF8"
+					},
+					{
+						"name": "WeekOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "WeekName",
+						"type": "UTF8"
+					},
+					{
+						"name": "MonthOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "MonthName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CalendarQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "CalendarQuarterName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CalendarYear",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalMonth",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalMonthName",
+						"type": "UTF8"
+					},
+					{
+						"name": "FiscalQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalQuarterName",
+						"type": "UTF8"
+					},
+					{
+						"name": "FiscalYear",
+						"type": "INT32"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSQLMetrics')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "dbo.Covid19_Metrics.parquet",
+						"container": "azure-sql-db"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "INT32"
+					},
+					{
+						"name": "Updated",
+						"type": "DATE"
+					},
+					{
+						"name": "Confirmed",
+						"type": "INT32"
+					},
+					{
+						"name": "Confirmed_Change",
+						"type": "INT32"
+					},
+					{
+						"name": "Deaths",
+						"type": "INT32"
+					},
+					{
+						"name": "Deaths_Change",
+						"type": "INT32"
+					},
+					{
+						"name": "Recovered",
+						"type": "INT32"
+					},
+					{
+						"name": "Recovered_Change",
+						"type": "INT32"
+					},
+					{
+						"name": "Latitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					},
+					{
+						"name": "Longitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					},
+					{
+						"name": "ISO2",
+						"type": "UTF8"
+					},
+					{
+						"name": "ISO3",
+						"type": "UTF8"
+					},
+					{
+						"name": "Country_Region",
+						"type": "UTF8"
+					},
+					{
+						"name": "load_time",
+						"type": "INT96"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
 			]
 		},
 		{
@@ -725,6 +1018,199 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDBPolicy')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "covid_policy.json",
+						"container": "cloud-cosmos-db"
+					}
+				},
+				"schema": {
+					"type": "object",
+					"properties": {
+						"CountryName": {
+							"type": "string"
+						},
+						"CountryCode": {
+							"type": "string"
+						},
+						"RegionName": {
+							"type": "null"
+						},
+						"RegionCode": {
+							"type": "null"
+						},
+						"Jurisdiction": {
+							"type": "string"
+						},
+						"Date": {
+							"type": "string"
+						},
+						"C1_School closing": {
+							"type": "integer"
+						},
+						"C1_Flag": {
+							"type": "integer"
+						},
+						"C2_Workplace closing": {
+							"type": "integer"
+						},
+						"C2_Flag": {
+							"type": "integer"
+						},
+						"C3_Cancel public events": {
+							"type": "integer"
+						},
+						"C3_Flag": {
+							"type": "integer"
+						},
+						"C4_Restrictions on gatherings": {
+							"type": "integer"
+						},
+						"C4_Flag": {
+							"type": "integer"
+						},
+						"C5_Close public transport": {
+							"type": "integer"
+						},
+						"C5_Flag": {
+							"type": "integer"
+						},
+						"C6_Stay at home requirements": {
+							"type": "integer"
+						},
+						"C6_Flag": {
+							"type": "integer"
+						},
+						"C7_Restrictions on internal movement": {
+							"type": "integer"
+						},
+						"C7_Flag": {
+							"type": "integer"
+						},
+						"C8_International travel controls": {
+							"type": "integer"
+						},
+						"E1_Income support": {
+							"type": "integer"
+						},
+						"E1_Flag": {
+							"type": "integer"
+						},
+						"E2_Debt contract relief": {
+							"type": "integer"
+						},
+						"E3_Fiscal measures": {
+							"type": "integer"
+						},
+						"E4_International support": {
+							"type": "integer"
+						},
+						"H1_Public information campaigns": {
+							"type": "integer"
+						},
+						"H1_Flag": {
+							"type": "integer"
+						},
+						"H2_Testing policy": {
+							"type": "integer"
+						},
+						"H3_Contact tracing": {
+							"type": "integer"
+						},
+						"H4_Emergency investment in healthcare": {
+							"type": "integer"
+						},
+						"H5_Investment in vaccines": {
+							"type": "integer"
+						},
+						"H6_Facial Coverings": {
+							"type": "integer"
+						},
+						"H6_Flag": {
+							"type": "integer"
+						},
+						"H7_Vaccination policy": {
+							"type": "integer"
+						},
+						"H7_Flag": {
+							"type": "integer"
+						},
+						"H8_Protection of elderly people": {
+							"type": "integer"
+						},
+						"H8_Flag": {
+							"type": "integer"
+						},
+						"M1_Wildcard": {
+							"type": "integer"
+						},
+						"StringencyIndex": {
+							"type": "integer"
+						},
+						"StringencyIndexForDisplay": {
+							"type": "integer"
+						},
+						"StringencyLegacyIndex": {
+							"type": "integer"
+						},
+						"StringencyLegacyIndexForDisplay": {
+							"type": "integer"
+						},
+						"GovernmentResponseIndex": {
+							"type": "integer"
+						},
+						"GovernmentResponseIndexForDisplay": {
+							"type": "integer"
+						},
+						"ContainmentHealthIndex": {
+							"type": "integer"
+						},
+						"ContainmentHealthIndexForDisplay": {
+							"type": "integer"
+						},
+						"EconomicSupportIndex": {
+							"type": "integer"
+						},
+						"EconomicSupportIndexForDisplay": {
+							"type": "integer"
+						},
+						"id": {
+							"type": "string"
+						},
+						"_rid": {
+							"type": "string"
+						},
+						"_self": {
+							"type": "string"
+						},
+						"_etag": {
+							"type": "string"
+						},
+						"_attachments": {
+							"type": "string"
+						},
+						"_ts": {
+							"type": "integer"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/CosmosDbNoSqlContainer1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -914,6 +1400,244 @@
 					}
 				},
 				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OnPremCountry')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "OnPremCountry",
+						"container": "on-prem-shir"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "Country",
+						"type": "UTF8"
+					},
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Latitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					},
+					{
+						"name": "Longitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OnPremCovid')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "OnPremCovid",
+						"container": "on-prem-shir"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "ID",
+						"type": "INT32"
+					},
+					{
+						"name": "Updated",
+						"type": "DATE"
+					},
+					{
+						"name": "Confirmed",
+						"type": "INT32"
+					},
+					{
+						"name": "Confirmed_Change",
+						"type": "INT32"
+					},
+					{
+						"name": "Deaths",
+						"type": "INT32"
+					},
+					{
+						"name": "Deaths_Change",
+						"type": "INT32"
+					},
+					{
+						"name": "Recovered",
+						"type": "INT32"
+					},
+					{
+						"name": "Recovered_Change",
+						"type": "INT32"
+					},
+					{
+						"name": "Latitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					},
+					{
+						"name": "Longitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					},
+					{
+						"name": "ISO2",
+						"type": "UTF8"
+					},
+					{
+						"name": "ISO3",
+						"type": "UTF8"
+					},
+					{
+						"name": "Country_Region",
+						"type": "UTF8"
+					},
+					{
+						"name": "load_time",
+						"type": "INT96"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OnPremDates')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "OnPremDates",
+						"container": "on-prem-shir"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "DateKey",
+						"type": "INT32"
+					},
+					{
+						"name": "FullDate",
+						"type": "DATE"
+					},
+					{
+						"name": "isWeekDay",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "DayOfWeek",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfMonth",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "DayName",
+						"type": "UTF8"
+					},
+					{
+						"name": "WeekOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "WeekName",
+						"type": "UTF8"
+					},
+					{
+						"name": "MonthOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "MonthName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CalendarQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "CalendarQuarterName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CalendarYear",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalMonth",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalMonthName",
+						"type": "UTF8"
+					},
+					{
+						"name": "FiscalQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalQuarterName",
+						"type": "UTF8"
+					},
+					{
+						"name": "FiscalYear",
+						"type": "INT32"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
@@ -1381,23 +2105,632 @@
 					"connectionString": "[parameters('SqlServer1_connectionString')]"
 				},
 				"connectVia": {
-					"referenceName": "onpremcoviddatashir",
+					"referenceName": "onpremshir",
 					"type": "IntegrationRuntimeReference"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/onpremcoviddatashir')]"
+				"[concat(variables('factoryId'), '/integrationRuntimes/onpremshir')]"
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/onpremcoviddatashir')]",
+			"name": "[concat(parameters('factoryName'), '/onpremshir')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"type": "SelfHosted",
+				"description": "with new vpn config",
 				"typeProperties": {}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ODS Creation')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSQLCountry",
+								"type": "DatasetReference"
+							},
+							"name": "AzureSQLCountry"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSQLMetrics",
+								"type": "DatasetReference"
+							},
+							"name": "AzureSQLMetrics"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSQLDates",
+								"type": "DatasetReference"
+							},
+							"name": "AzureSQLDates"
+						},
+						{
+							"dataset": {
+								"referenceName": "CosmosDBPolicy",
+								"type": "DatasetReference"
+							},
+							"name": "CosmosDBPolicy"
+						},
+						{
+							"dataset": {
+								"referenceName": "OnPremCountry",
+								"type": "DatasetReference"
+							},
+							"name": "OnPremCountry"
+						},
+						{
+							"dataset": {
+								"referenceName": "OnPremCovid",
+								"type": "DatasetReference"
+							},
+							"name": "OnPremCovid"
+						},
+						{
+							"dataset": {
+								"referenceName": "OnPremDates",
+								"type": "DatasetReference"
+							},
+							"name": "OnPremDates"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "FullCountryDataSinkODS",
+								"type": "DatasetReference"
+							},
+							"name": "sinkFullCountryData",
+							"description": "put the country data in the covid data lake ods"
+						},
+						{
+							"dataset": {
+								"referenceName": "FullDatesDataSinkODS",
+								"type": "DatasetReference"
+							},
+							"name": "sinkFullDatesData",
+							"description": "sink dates data to covid data lake ods"
+						},
+						{
+							"dataset": {
+								"referenceName": "FullMetricsDataSinkODS",
+								"type": "DatasetReference"
+							},
+							"name": "sinkFullMetricsData"
+						}
+					],
+					"transformations": [
+						{
+							"name": "combAzureSQLCountry"
+						},
+						{
+							"name": "selectcountries"
+						},
+						{
+							"name": "FullCombinedCountry"
+						},
+						{
+							"name": "selectdates"
+						},
+						{
+							"name": "dateformat"
+						},
+						{
+							"name": "combAzureSQLDates"
+						},
+						{
+							"name": "FullCombinedDates"
+						},
+						{
+							"name": "selectmetrics"
+						},
+						{
+							"name": "combAzureSQLMetrics"
+						},
+						{
+							"name": "cosmosmetrics"
+						},
+						{
+							"name": "SQLMetrics"
+						},
+						{
+							"name": "joinedmetricswithcountry"
+						},
+						{
+							"name": "metrics1"
+						},
+						{
+							"name": "FullCombinedMetrics"
+						},
+						{
+							"name": "selectmetricstosink"
+						}
+					],
+					"scriptLines": [
+						"parameters{",
+						"     columnnaming as string (\"Date\")",
+						"}",
+						"source(output(",
+						"          Country as string,",
+						"          CountryCode as string,",
+						"          Latitude as decimal(10,5),",
+						"          Longitude as decimal(10,5)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> AzureSQLCountry",
+						"source(output(",
+						"          ID as integer,",
+						"          Updated as date,",
+						"          Confirmed as integer,",
+						"          Confirmed_Change as integer,",
+						"          Deaths as integer,",
+						"          Deaths_Change as integer,",
+						"          Recovered as integer,",
+						"          Recovered_Change as integer,",
+						"          Latitude as decimal(10,5),",
+						"          Longitude as decimal(10,5),",
+						"          ISO2 as string,",
+						"          ISO3 as string,",
+						"          Country_Region as string,",
+						"          load_time as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> AzureSQLMetrics",
+						"source(output(",
+						"          DateKey as integer,",
+						"          FullDate as date,",
+						"          isWeekDay as boolean,",
+						"          DayOfWeek as integer,",
+						"          DayOfMonth as integer,",
+						"          DayOfQuarter as integer,",
+						"          DayOfYear as integer,",
+						"          DayName as string,",
+						"          WeekOfYear as integer,",
+						"          WeekName as string,",
+						"          MonthOfYear as integer,",
+						"          MonthName as string,",
+						"          CalendarQuarter as integer,",
+						"          CalendarQuarterName as string,",
+						"          CalendarYear as integer,",
+						"          FiscalMonth as integer,",
+						"          FiscalMonthName as string,",
+						"          FiscalQuarter as integer,",
+						"          FiscalQuarterName as string,",
+						"          FiscalYear as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> AzureSQLDates",
+						"source(output(",
+						"          CountryName as string,",
+						"          CountryCode as string,",
+						"          RegionName as string,",
+						"          RegionCode as string,",
+						"          Jurisdiction as string,",
+						"          Date as string,",
+						"          {C1_School closing} as integer,",
+						"          C1_Flag as integer,",
+						"          {C2_Workplace closing} as integer,",
+						"          C2_Flag as integer,",
+						"          {C3_Cancel public events} as integer,",
+						"          C3_Flag as integer,",
+						"          {C4_Restrictions on gatherings} as integer,",
+						"          C4_Flag as integer,",
+						"          {C5_Close public transport} as integer,",
+						"          C5_Flag as integer,",
+						"          {C6_Stay at home requirements} as integer,",
+						"          C6_Flag as integer,",
+						"          {C7_Restrictions on internal movement} as integer,",
+						"          C7_Flag as integer,",
+						"          {C8_International travel controls} as integer,",
+						"          {E1_Income support} as integer,",
+						"          E1_Flag as integer,",
+						"          {E2_Debt contract relief} as integer,",
+						"          {E3_Fiscal measures} as integer,",
+						"          {E4_International support} as integer,",
+						"          {H1_Public information campaigns} as integer,",
+						"          H1_Flag as integer,",
+						"          {H2_Testing policy} as integer,",
+						"          {H3_Contact tracing} as integer,",
+						"          {H4_Emergency investment in healthcare} as integer,",
+						"          {H5_Investment in vaccines} as integer,",
+						"          {H6_Facial Coverings} as integer,",
+						"          H6_Flag as integer,",
+						"          {H7_Vaccination policy} as integer,",
+						"          H7_Flag as integer,",
+						"          {H8_Protection of elderly people} as integer,",
+						"          H8_Flag as integer,",
+						"          M1_Wildcard as integer,",
+						"          StringencyIndex as integer,",
+						"          StringencyIndexForDisplay as integer,",
+						"          StringencyLegacyIndex as integer,",
+						"          StringencyLegacyIndexForDisplay as integer,",
+						"          GovernmentResponseIndex as integer,",
+						"          GovernmentResponseIndexForDisplay as integer,",
+						"          ContainmentHealthIndex as integer,",
+						"          ContainmentHealthIndexForDisplay as integer,",
+						"          EconomicSupportIndex as integer,",
+						"          EconomicSupportIndexForDisplay as integer,",
+						"          id as string,",
+						"          {_rid} as string,",
+						"          {_self} as string,",
+						"          {_etag} as string,",
+						"          {_attachments} as string,",
+						"          {_ts} as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> CosmosDBPolicy",
+						"source(output(",
+						"          Country as string,",
+						"          CountryCode as string,",
+						"          Latitude as decimal(10,5),",
+						"          Longitude as decimal(10,5)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> OnPremCountry",
+						"source(output(",
+						"          ID as integer,",
+						"          Updated as date,",
+						"          Confirmed as integer,",
+						"          Confirmed_Change as integer,",
+						"          Deaths as integer,",
+						"          Deaths_Change as integer,",
+						"          Recovered as integer,",
+						"          Recovered_Change as integer,",
+						"          Latitude as decimal(10,5),",
+						"          Longitude as decimal(10,5),",
+						"          ISO2 as string,",
+						"          ISO3 as string,",
+						"          Country_Region as string,",
+						"          load_time as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> OnPremCovid",
+						"source(output(",
+						"          DateKey as integer,",
+						"          FullDate as date,",
+						"          isWeekDay as boolean,",
+						"          DayOfWeek as integer,",
+						"          DayOfMonth as integer,",
+						"          DayOfQuarter as integer,",
+						"          DayOfYear as integer,",
+						"          DayName as string,",
+						"          WeekOfYear as integer,",
+						"          WeekName as string,",
+						"          MonthOfYear as integer,",
+						"          MonthName as string,",
+						"          CalendarQuarter as integer,",
+						"          CalendarQuarterName as string,",
+						"          CalendarYear as integer,",
+						"          FiscalMonth as integer,",
+						"          FiscalMonthName as string,",
+						"          FiscalQuarter as integer,",
+						"          FiscalQuarterName as string,",
+						"          FiscalYear as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> OnPremDates",
+						"AzureSQLCountry, OnPremCountry union(byName: true)~> combAzureSQLCountry",
+						"CosmosDBPolicy select(mapColumn(",
+						"          Country = CountryName,",
+						"          CountryCode",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectcountries",
+						"combAzureSQLCountry, selectcountries union(byName: true)~> FullCombinedCountry",
+						"CosmosDBPolicy select(mapColumn(",
+						"          Date",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectdates",
+						"selectdates cast(output(",
+						"          Date as date 'yyyy-MM-dd'",
+						"     ),",
+						"     errors: true) ~> dateformat",
+						"AzureSQLDates, OnPremDates union(byName: true)~> combAzureSQLDates",
+						"combAzureSQLDates, dateformat union(byName: true)~> FullCombinedDates",
+						"CosmosDBPolicy select(mapColumn(",
+						"          Date,",
+						"          CountryCode,",
+						"          {C1_School closing},",
+						"          C1_Flag,",
+						"          {C2_Workplace closing},",
+						"          C2_Flag,",
+						"          {C3_Cancel public events},",
+						"          C3_Flag,",
+						"          {C4_Restrictions on gatherings},",
+						"          C4_Flag,",
+						"          {C5_Close public transport},",
+						"          C5_Flag,",
+						"          {C6_Stay at home requirements},",
+						"          C6_Flag,",
+						"          {C7_Restrictions on internal movement},",
+						"          C7_Flag,",
+						"          {C8_International travel controls},",
+						"          {E1_Income support},",
+						"          {E2_Debt contract relief},",
+						"          {E3_Fiscal measures},",
+						"          {E4_International support},",
+						"          {H1_Public information campaigns},",
+						"          {H2_Testing policy},",
+						"          {H3_Contact tracing},",
+						"          {H4_Emergency investment in healthcare},",
+						"          {H5_Investment in vaccines},",
+						"          {H6_Facial Coverings},",
+						"          H6_Flag,",
+						"          {H7_Vaccination policy},",
+						"          H7_Flag,",
+						"          {H8_Protection of elderly people},",
+						"          H8_Flag,",
+						"          M1_Wildcard,",
+						"          StringencyIndex,",
+						"          GovernmentResponseIndex,",
+						"          ContainmentHealthIndex,",
+						"          EconomicSupportIndex,",
+						"          id",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectmetrics",
+						"AzureSQLMetrics, OnPremCovid union(byName: true)~> combAzureSQLMetrics",
+						"selectmetrics cast(output(",
+						"          Date as date 'yyyy-MM-dd'",
+						"     ),",
+						"     errors: true) ~> cosmosmetrics",
+						"combAzureSQLMetrics select(mapColumn(",
+						"          ID,",
+						"          Date = Updated,",
+						"          Confirmed,",
+						"          Confirmed_Change,",
+						"          Deaths,",
+						"          Deaths_Change,",
+						"          Recovered,",
+						"          Recovered_Change,",
+						"          Latitude,",
+						"          Longitude,",
+						"          ISO2,",
+						"          ISO3,",
+						"          Country_Region,",
+						"          load_time",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> SQLMetrics",
+						"cosmosmetrics, FullCombinedCountry join(selectmetrics@CountryCode == FullCombinedCountry@CountryCode,",
+						"     joinType:'right',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> joinedmetricswithcountry",
+						"joinedmetricswithcountry select(mapColumn(",
+						"          Date,",
+						"          {C1_School closing},",
+						"          C1_Flag,",
+						"          {C2_Workplace closing},",
+						"          C2_Flag,",
+						"          {C3_Cancel public events},",
+						"          C3_Flag,",
+						"          {C4_Restrictions on gatherings},",
+						"          C4_Flag,",
+						"          {C5_Close public transport},",
+						"          C5_Flag,",
+						"          {C6_Stay at home requirements},",
+						"          C6_Flag,",
+						"          {C7_Restrictions on internal movement},",
+						"          C7_Flag,",
+						"          {C8_International travel controls},",
+						"          {E1_Income support},",
+						"          {E2_Debt contract relief},",
+						"          {E3_Fiscal measures},",
+						"          {E4_International support},",
+						"          {H1_Public information campaigns},",
+						"          {H2_Testing policy},",
+						"          {H3_Contact tracing},",
+						"          {H4_Emergency investment in healthcare},",
+						"          {H5_Investment in vaccines},",
+						"          {H6_Facial Coverings},",
+						"          H6_Flag,",
+						"          {H7_Vaccination policy},",
+						"          H7_Flag,",
+						"          {H8_Protection of elderly people},",
+						"          H8_Flag,",
+						"          M1_Wildcard,",
+						"          StringencyIndex,",
+						"          GovernmentResponseIndex,",
+						"          ContainmentHealthIndex,",
+						"          EconomicSupportIndex,",
+						"          id,",
+						"          Country,",
+						"          CountryCode = FullCombinedCountry@CountryCode,",
+						"          Latitude,",
+						"          Longitude",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> metrics1",
+						"metrics1, SQLMetrics join(metrics1@Date == SQLMetrics@Date,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> FullCombinedMetrics",
+						"FullCombinedMetrics select(mapColumn(",
+						"          Date = metrics1@Date,",
+						"          C1Schoolclosing = {C1_School closing},",
+						"          C1Flag = C1_Flag,",
+						"          C2Workplaceclosing = {C2_Workplace closing},",
+						"          C2Flag = C2_Flag,",
+						"          C3Cancelpublicevents = {C3_Cancel public events},",
+						"          C3Flag = C3_Flag,",
+						"          C4Restrictionsongatherings = {C4_Restrictions on gatherings},",
+						"          C4Flag = C4_Flag,",
+						"          C5Closepublictransport = {C5_Close public transport},",
+						"          C5Flag = C5_Flag,",
+						"          C6Stayathomerequirements = {C6_Stay at home requirements},",
+						"          C6Flag = C6_Flag,",
+						"          C7Restrictionsoninternalmovement = {C7_Restrictions on internal movement},",
+						"          C7Flag = C7_Flag,",
+						"          C8Internationaltravelcontrols = {C8_International travel controls},",
+						"          E1incomesupport = {E1_Income support},",
+						"          E2Debtcontractrelief = {E2_Debt contract relief},",
+						"          E3Fiscalmeasures = {E3_Fiscal measures},",
+						"          E4Internationalsupport = {E4_International support},",
+						"          H1Publicinformationcampaigns = {H1_Public information campaigns},",
+						"          H2Testingpolicy = {H2_Testing policy},",
+						"          H3Contacttracing = {H3_Contact tracing},",
+						"          H4Emergencyinvestmentinhealthcare = {H4_Emergency investment in healthcare},",
+						"          H5Investmentinvaccines = {H5_Investment in vaccines},",
+						"          H6FacialCoverings = {H6_Facial Coverings},",
+						"          H6Flag = H6_Flag,",
+						"          H7Vaccinationpolicy = {H7_Vaccination policy},",
+						"          H7Flag = H7_Flag,",
+						"          H8Protectionofelderlypeople = {H8_Protection of elderly people},",
+						"          H8Flag = H8_Flag,",
+						"          M1Wildcard = M1_Wildcard,",
+						"          StringencyIndex,",
+						"          GovernmentResponseIndex,",
+						"          ContainmentHealthIndex,",
+						"          EconomicSupportIndex,",
+						"          id = metrics1@id,",
+						"          Country,",
+						"          CountryCode,",
+						"          Latitude = metrics1@Latitude,",
+						"          Longitude = metrics1@Longitude,",
+						"          ID = SQLMetrics@ID,",
+						"          Date = SQLMetrics@Date,",
+						"          Confirmed,",
+						"          Confirmed_Change,",
+						"          Deaths,",
+						"          Deaths_Change,",
+						"          Recovered,",
+						"          Recovered_Change,",
+						"          Latitude = SQLMetrics@Latitude,",
+						"          Longitude = SQLMetrics@Longitude,",
+						"          ISO2,",
+						"          ISO3,",
+						"          Country_Region,",
+						"          load_time",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> selectmetricstosink",
+						"FullCombinedCountry sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkFullCountryData",
+						"FullCombinedDates sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkFullDatesData",
+						"selectmetricstosink sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sinkFullMetricsData"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSQLCountry')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSQLMetrics')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSQLDates')]",
+				"[concat(variables('factoryId'), '/datasets/CosmosDBPolicy')]",
+				"[concat(variables('factoryId'), '/datasets/OnPremCountry')]",
+				"[concat(variables('factoryId'), '/datasets/OnPremCovid')]",
+				"[concat(variables('factoryId'), '/datasets/OnPremDates')]",
+				"[concat(variables('factoryId'), '/datasets/FullCountryDataSinkODS')]",
+				"[concat(variables('factoryId'), '/datasets/FullDatesDataSinkODS')]",
+				"[concat(variables('factoryId'), '/datasets/FullMetricsDataSinkODS')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FullCountryDataSinkODS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "ods"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FullDatesDataSinkODS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "ods"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FullMetricsDataSinkODS')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"container": "ods"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
 		}
 	]
 }

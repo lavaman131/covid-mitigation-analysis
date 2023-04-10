@@ -58,9 +58,6 @@
 					},
 					"CosmosDbNoSql1_connectionString": {
 						"value": "[parameters('CosmosDbNoSql1_connectionString')]"
-					},
-					"SqlServer1_connectionString": {
-						"value": "[parameters('SqlServer1_connectionString')]"
 					}
 				}
 			},
@@ -79,6 +76,9 @@
 				"parameters": {
 					"factoryName": {
 						"value": "[parameters('factoryName')]"
+					},
+					"SqlServer1_connectionString": {
+						"value": "[parameters('SqlServer1_connectionString')]"
 					}
 				}
 			},
