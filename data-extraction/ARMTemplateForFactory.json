@@ -1395,7 +1395,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregate Data",
+						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -1420,7 +1420,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregate Data",
+						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -1445,7 +1445,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregate Data",
+						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -2707,18 +2707,24 @@
 						"FullCombinedCountry sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
+						"     partitionFileNames:['sinkFullCountryData'],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sinkFullCountryData",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sinkFullCountryData",
 						"FullCombinedDates sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
+						"     partitionFileNames:['sinkFullDatesData'],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sinkFullDatesData",
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sinkFullDatesData",
 						"selectmetricstosink sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'parquet',",
+						"     partitionFileNames:['sinkFullMetricsData'],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sinkFullMetricsData"
+						"     skipDuplicateMapOutputs: true,",
+						"     partitionBy('hash', 1)) ~> sinkFullMetricsData"
 					]
 				}
 			},

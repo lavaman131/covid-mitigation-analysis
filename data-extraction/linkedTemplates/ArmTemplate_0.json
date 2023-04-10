@@ -937,7 +937,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregate Data",
+						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -962,7 +962,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregate Data",
+						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -987,7 +987,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregate Data",
+						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
