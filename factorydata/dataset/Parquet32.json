@@ -1,5 +1,5 @@
 {
-	"name": "FullMetricsDataSinkODS",
+	"name": "Parquet32",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
