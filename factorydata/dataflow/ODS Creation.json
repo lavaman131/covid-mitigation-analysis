@@ -57,16 +57,52 @@
 			"sinks": [],
 			"transformations": [
 				{
-					"name": "combAzureSQL"
+					"name": "combAzureSQLCountry"
 				},
 				{
 					"name": "selectcountries"
 				},
 				{
-					"name": "combAzureSQLCosmos"
+					"name": "FullCombinedCountry"
+				},
+				{
+					"name": "selectdates"
+				},
+				{
+					"name": "dateformat"
+				},
+				{
+					"name": "combAzureSQLDates"
+				},
+				{
+					"name": "FullCombinedDates"
+				},
+				{
+					"name": "selectmetrics"
+				},
+				{
+					"name": "combAzureSQLMetrics"
+				},
+				{
+					"name": "cosmosmetrics"
+				},
+				{
+					"name": "SQLMetrics"
+				},
+				{
+					"name": "joinedmetricswithcountry"
+				},
+				{
+					"name": "metrics1"
+				},
+				{
+					"name": "FullCombinedMetrics"
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     columnnaming as string (\"Date\")",
+				"}",
 				"source(output(",
 				"          Country as string,",
 				"          CountryCode as string,",
@@ -240,14 +276,145 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> OnPremDates",
-				"AzureSQLCountry, OnPremCountry union(byName: true)~> combAzureSQL",
+				"AzureSQLCountry, OnPremCountry union(byName: true)~> combAzureSQLCountry",
 				"CosmosDBPolicy select(mapColumn(",
 				"          Country = CountryName,",
 				"          CountryCode",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> selectcountries",
-				"combAzureSQL, selectcountries union(byName: true)~> combAzureSQLCosmos"
+				"combAzureSQLCountry, selectcountries union(byName: true)~> FullCombinedCountry",
+				"CosmosDBPolicy select(mapColumn(",
+				"          Date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectdates",
+				"selectdates cast(output(",
+				"          Date as date 'yyyy-MM-dd'",
+				"     ),",
+				"     errors: true) ~> dateformat",
+				"AzureSQLDates, OnPremDates union(byName: true)~> combAzureSQLDates",
+				"combAzureSQLDates, dateformat union(byName: true)~> FullCombinedDates",
+				"CosmosDBPolicy select(mapColumn(",
+				"          Date,",
+				"          CountryCode,",
+				"          {C1_School closing},",
+				"          C1_Flag,",
+				"          {C2_Workplace closing},",
+				"          C2_Flag,",
+				"          {C3_Cancel public events},",
+				"          C3_Flag,",
+				"          {C4_Restrictions on gatherings},",
+				"          C4_Flag,",
+				"          {C5_Close public transport},",
+				"          C5_Flag,",
+				"          {C6_Stay at home requirements},",
+				"          C6_Flag,",
+				"          {C7_Restrictions on internal movement},",
+				"          C7_Flag,",
+				"          {C8_International travel controls},",
+				"          {E1_Income support},",
+				"          {E2_Debt contract relief},",
+				"          {E3_Fiscal measures},",
+				"          {E4_International support},",
+				"          {H1_Public information campaigns},",
+				"          {H2_Testing policy},",
+				"          {H3_Contact tracing},",
+				"          {H4_Emergency investment in healthcare},",
+				"          {H5_Investment in vaccines},",
+				"          {H6_Facial Coverings},",
+				"          H6_Flag,",
+				"          {H7_Vaccination policy},",
+				"          H7_Flag,",
+				"          {H8_Protection of elderly people},",
+				"          H8_Flag,",
+				"          M1_Wildcard,",
+				"          StringencyIndex,",
+				"          GovernmentResponseIndex,",
+				"          ContainmentHealthIndex,",
+				"          EconomicSupportIndex,",
+				"          id",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectmetrics",
+				"AzureSQLMetrics, OnPremCovid union(byName: true)~> combAzureSQLMetrics",
+				"selectmetrics cast(output(",
+				"          Date as date 'yyyy-MM-dd'",
+				"     ),",
+				"     errors: true) ~> cosmosmetrics",
+				"combAzureSQLMetrics select(mapColumn(",
+				"          ID,",
+				"          Date = Updated,",
+				"          Confirmed,",
+				"          Confirmed_Change,",
+				"          Deaths,",
+				"          Deaths_Change,",
+				"          Recovered,",
+				"          Recovered_Change,",
+				"          Latitude,",
+				"          Longitude,",
+				"          ISO2,",
+				"          ISO3,",
+				"          Country_Region,",
+				"          load_time",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> SQLMetrics",
+				"cosmosmetrics, FullCombinedCountry join(selectmetrics@CountryCode == FullCombinedCountry@CountryCode,",
+				"     joinType:'right',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinedmetricswithcountry",
+				"joinedmetricswithcountry select(mapColumn(",
+				"          Date,",
+				"          {C1_School closing},",
+				"          C1_Flag,",
+				"          {C2_Workplace closing},",
+				"          C2_Flag,",
+				"          {C3_Cancel public events},",
+				"          C3_Flag,",
+				"          {C4_Restrictions on gatherings},",
+				"          C4_Flag,",
+				"          {C5_Close public transport},",
+				"          C5_Flag,",
+				"          {C6_Stay at home requirements},",
+				"          C6_Flag,",
+				"          {C7_Restrictions on internal movement},",
+				"          C7_Flag,",
+				"          {C8_International travel controls},",
+				"          {E1_Income support},",
+				"          {E2_Debt contract relief},",
+				"          {E3_Fiscal measures},",
+				"          {E4_International support},",
+				"          {H1_Public information campaigns},",
+				"          {H2_Testing policy},",
+				"          {H3_Contact tracing},",
+				"          {H4_Emergency investment in healthcare},",
+				"          {H5_Investment in vaccines},",
+				"          {H6_Facial Coverings},",
+				"          H6_Flag,",
+				"          {H7_Vaccination policy},",
+				"          H7_Flag,",
+				"          {H8_Protection of elderly people},",
+				"          H8_Flag,",
+				"          M1_Wildcard,",
+				"          StringencyIndex,",
+				"          GovernmentResponseIndex,",
+				"          ContainmentHealthIndex,",
+				"          EconomicSupportIndex,",
+				"          id,",
+				"          Country,",
+				"          CountryCode = FullCombinedCountry@CountryCode,",
+				"          Latitude,",
+				"          Longitude",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> metrics1",
+				"metrics1, SQLMetrics join(metrics1@Date == SQLMetrics@Date,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> FullCombinedMetrics"
 			]
 		}
 	}
