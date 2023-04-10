@@ -11,7 +11,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"folderPath": "Aggregate Data",
-				"container": "ods"
+				"container": "odscontainer"
 			},
 			"compressionCodec": "snappy"
 		},
