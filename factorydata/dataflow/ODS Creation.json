@@ -54,7 +54,31 @@
 					"name": "OnPremDates"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "FullCountryDataSinkODS",
+						"type": "DatasetReference"
+					},
+					"name": "sinkFullCountryData",
+					"description": "put the country data in the covid data lake ods"
+				},
+				{
+					"dataset": {
+						"referenceName": "FullDatesDataSinkODS",
+						"type": "DatasetReference"
+					},
+					"name": "sinkFullDatesData",
+					"description": "sink dates data to covid data lake ods"
+				},
+				{
+					"dataset": {
+						"referenceName": "FullMetricsDataSinkODS",
+						"type": "DatasetReference"
+					},
+					"name": "sinkFullMetricsData"
+				}
+			],
 			"transformations": [
 				{
 					"name": "combAzureSQLCountry"
@@ -97,6 +121,9 @@
 				},
 				{
 					"name": "FullCombinedMetrics"
+				},
+				{
+					"name": "selectmetricstosink"
 				}
 			],
 			"scriptLines": [
@@ -414,7 +441,81 @@
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> FullCombinedMetrics"
+				"     broadcast: 'auto')~> FullCombinedMetrics",
+				"FullCombinedMetrics select(mapColumn(",
+				"          Date = metrics1@Date,",
+				"          C1Schoolclosing = {C1_School closing},",
+				"          C1Flag = C1_Flag,",
+				"          C2Workplaceclosing = {C2_Workplace closing},",
+				"          C2Flag = C2_Flag,",
+				"          C3Cancelpublicevents = {C3_Cancel public events},",
+				"          C3Flag = C3_Flag,",
+				"          C4Restrictionsongatherings = {C4_Restrictions on gatherings},",
+				"          C4Flag = C4_Flag,",
+				"          C5Closepublictransport = {C5_Close public transport},",
+				"          C5Flag = C5_Flag,",
+				"          C6Stayathomerequirements = {C6_Stay at home requirements},",
+				"          C6Flag = C6_Flag,",
+				"          C7Restrictionsoninternalmovement = {C7_Restrictions on internal movement},",
+				"          C7Flag = C7_Flag,",
+				"          C8Internationaltravelcontrols = {C8_International travel controls},",
+				"          E1incomesupport = {E1_Income support},",
+				"          E2Debtcontractrelief = {E2_Debt contract relief},",
+				"          E3Fiscalmeasures = {E3_Fiscal measures},",
+				"          E4Internationalsupport = {E4_International support},",
+				"          H1Publicinformationcampaigns = {H1_Public information campaigns},",
+				"          H2Testingpolicy = {H2_Testing policy},",
+				"          H3Contacttracing = {H3_Contact tracing},",
+				"          H4Emergencyinvestmentinhealthcare = {H4_Emergency investment in healthcare},",
+				"          H5Investmentinvaccines = {H5_Investment in vaccines},",
+				"          H6FacialCoverings = {H6_Facial Coverings},",
+				"          H6Flag = H6_Flag,",
+				"          H7Vaccinationpolicy = {H7_Vaccination policy},",
+				"          H7Flag = H7_Flag,",
+				"          H8Protectionofelderlypeople = {H8_Protection of elderly people},",
+				"          H8Flag = H8_Flag,",
+				"          M1Wildcard = M1_Wildcard,",
+				"          StringencyIndex,",
+				"          GovernmentResponseIndex,",
+				"          ContainmentHealthIndex,",
+				"          EconomicSupportIndex,",
+				"          id = metrics1@id,",
+				"          Country,",
+				"          CountryCode,",
+				"          Latitude = metrics1@Latitude,",
+				"          Longitude = metrics1@Longitude,",
+				"          ID = SQLMetrics@ID,",
+				"          Date = SQLMetrics@Date,",
+				"          Confirmed,",
+				"          Confirmed_Change,",
+				"          Deaths,",
+				"          Deaths_Change,",
+				"          Recovered,",
+				"          Recovered_Change,",
+				"          Latitude = SQLMetrics@Latitude,",
+				"          Longitude = SQLMetrics@Longitude,",
+				"          ISO2,",
+				"          ISO3,",
+				"          Country_Region,",
+				"          load_time",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectmetricstosink",
+				"FullCombinedCountry sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkFullCountryData",
+				"FullCombinedDates sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkFullDatesData",
+				"selectmetricstosink sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sinkFullMetricsData"
 			]
 		}
 	}
