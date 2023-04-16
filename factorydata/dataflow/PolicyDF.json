@@ -92,8 +92,8 @@
 				"     ignoreNoFilesFound: false,",
 				"     documentForm: 'documentPerLine') ~> PolicyData",
 				"PolicyData select(mapColumn(",
-				"          each(patternMatch(`^[^_][a-zA-Z0-9_]*$`, /* All input columns */ true()),",
-				"               /* Input name */ $$ = $$)",
+				"          each(patternMatch(`^[^_][a-zA-Z0-9_]*$`, /* All input columns */true()),",
+				"               /* Input name */$$ = $$)",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> policy",
@@ -130,8 +130,10 @@
 				"policyextracted sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'parquet',",
+				"     partitionFileNames:['policy.parquet'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
