@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "OnPremCovid.parquet",
+				"fileName": "OnPremCovid",
 				"container": "on-prem-shir"
 			},
 			"compressionCodec": "snappy"
