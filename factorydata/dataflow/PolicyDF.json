@@ -12,10 +12,18 @@
 					"name": "PolicyData"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "policydata",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
-					"name": "select1"
+					"name": "policy"
 				}
 			],
 			"scriptLines": [
@@ -84,7 +92,12 @@
 				"          each(match(not(startsWith(name,\"_\"))&&name!=\"RegionName\"&&name!=\"RegionCode\"&&name!=\"id\"))",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1"
+				"     skipDuplicateMapOutputs: true) ~> policy",
+				"policy sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
