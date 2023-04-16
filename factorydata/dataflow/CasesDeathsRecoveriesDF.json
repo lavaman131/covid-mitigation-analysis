@@ -1,5 +1,5 @@
 {
-	"name": "CasesDF",
+	"name": "CasesDeathsRecoveriesDF",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -72,7 +72,7 @@
 				"AzureSQLMetrics, OnPremCovid union(byName: true)~> union1",
 				"union1 select(mapColumn(",
 				"          ID,",
-				"          Updated,",
+				"          Date = Updated,",
 				"          Confirmed,",
 				"          Confirmed_Change,",
 				"          Deaths,",
