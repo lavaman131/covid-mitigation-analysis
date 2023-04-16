@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "OnPremCountry",
+				"fileName": "OnPremCountry.parquet",
 				"container": "on-prem-shir"
 			},
 			"compressionCodec": "snappy"
