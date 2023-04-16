@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "ODS Creation",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"parameters": {
+							"columnnaming": "\"Date\""
+						}
 					},
 					"compute": {
 						"coreCount": 8,
