@@ -9,7 +9,7 @@
 						"referenceName": "CosmosDBPolicy",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "PolicyData"
 				}
 			],
 			"sinks": [],
@@ -79,8 +79,8 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
-				"     documentForm: 'documentPerLine') ~> source1",
-				"source1 select(mapColumn(",
+				"     documentForm: 'documentPerLine') ~> PolicyData",
+				"PolicyData select(mapColumn(",
 				"          each(match(not(startsWith(name, \"_\")) && name != \"RegionName\" && name != \"RegionCode\" && name != \"id\"))",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
