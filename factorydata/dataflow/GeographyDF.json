@@ -19,10 +19,18 @@
 					"name": "OnPremCountry"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "countrydata",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
-					"name": "union1"
+					"name": "country"
 				}
 			],
 			"scriptLines": [
@@ -46,7 +54,12 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> OnPremCountry",
-				"AzureSQLCountry union(byName: true)~> union1"
+				"AzureSQLCountry union(byName: true)~> country",
+				"country sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
