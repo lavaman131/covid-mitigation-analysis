@@ -1,0 +1,53 @@
+{
+	"name": "GeographyDF",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSQLCountry",
+						"type": "DatasetReference"
+					},
+					"name": "AzureSQLCountry"
+				},
+				{
+					"dataset": {
+						"referenceName": "OnPremCountry",
+						"type": "DatasetReference"
+					},
+					"name": "OnPremCountry"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "union1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Country as string,",
+				"          CountryCode as string,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> AzureSQLCountry",
+				"source(output(",
+				"          Country as string,",
+				"          CountryCode as string,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> OnPremCountry",
+				"AzureSQLCountry union(byName: true)~> union1"
+			]
+		}
+	}
+}
