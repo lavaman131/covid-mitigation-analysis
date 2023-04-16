@@ -3,35 +3,89 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "ODS Creation",
+				"name": "CasesDeathsRecoveriesDF",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
-					"retry": 5,
-					"retryIntervalInSeconds": 5,
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "ODS Creation",
-						"type": "DataFlowReference",
-						"parameters": {
-							"columnnaming": "\"Date\""
-						}
+						"referenceName": "CasesDeathsRecoveriesDF",
+						"type": "DataFlowReference"
 					},
-					"integrationRuntime": {
-						"referenceName": "biggerruntime",
-						"type": "IntegrationRuntimeReference"
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
 					},
-					"traceLevel": "None",
-					"runConcurrently": true,
-					"continueOnError": false,
-					"cacheSinks": {
-						"firstRowOnly": true
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "GeographyDF",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "PolicyDF",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "GeographyDF",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "PolicyDF",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [
+					{
+						"activity": "CasesDeathsRecoveriesDF",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "PolicyDF",
+						"type": "DataFlowReference"
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
 				}
 			}
 		],
