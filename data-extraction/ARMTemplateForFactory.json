@@ -291,7 +291,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "ODS Creation",
+						"name": "CasesDeathsRecoveriesDF",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -304,20 +304,90 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "ODS Creation",
+								"referenceName": "CasesDeathsRecoveriesDF",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"AzureSQLMetrics": {},
+									"OnPremCovid": {},
+									"sink1": {},
+									"sink2": {},
+									"sink3": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "GeographyDF",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "PolicyDF",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "GeographyDF",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
 									"AzureSQLCountry": {},
-									"AzureSQLMetrics": {},
-									"AzureSQLDates": {},
-									"CosmosDBPolicy": {},
 									"OnPremCountry": {},
-									"OnPremCovid": {},
-									"OnPremDates": {},
-									"sinkFullCountryData": {},
-									"sinkFullDatesData": {},
-									"sinkFullMetricsData": {}
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					},
+					{
+						"name": "PolicyDF",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [
+							{
+								"activity": "CasesDeathsRecoveriesDF",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "PolicyDF",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"PolicyData": {},
+									"sink1": {}
 								}
 							},
 							"staging": {},
@@ -336,7 +406,9 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/ODS Creation')]"
+				"[concat(variables('factoryId'), '/dataflows/CasesDeathsRecoveriesDF')]",
+				"[concat(variables('factoryId'), '/dataflows/GeographyDF')]",
+				"[concat(variables('factoryId'), '/dataflows/PolicyDF')]"
 			]
 		},
 		{
@@ -1905,6 +1977,31 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Parquet32')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "Aggregate Data",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SqlServerTable1')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -2131,6 +2228,131 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/casesdata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "Aggregated Data",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/countrydata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "Aggregated Data",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/deathsdata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "Aggregated Data",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/policydata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "Aggregated Data",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/recoveriesdata')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "Aggregated Data",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureBlobStorage1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -2139,9 +2361,15 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "biggerruntime",
+					"type": "IntegrationRuntimeReference"
 				}
 			},
-			"dependsOn": []
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/biggerruntime')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
@@ -2189,6 +2417,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/biggerruntime')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 16,
+							"timeToLive": 10,
+							"cleanup": false,
+							"customProperties": []
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/onpremshir')]",
 			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
@@ -2198,6 +2447,255 @@
 				"typeProperties": {}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CasesDeathsRecoveriesDF')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSQLMetrics",
+								"type": "DatasetReference"
+							},
+							"name": "AzureSQLMetrics"
+						},
+						{
+							"dataset": {
+								"referenceName": "OnPremCovid",
+								"type": "DatasetReference"
+							},
+							"name": "OnPremCovid"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "recoveriesdata",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "deathsdata",
+								"type": "DatasetReference"
+							},
+							"name": "sink2"
+						},
+						{
+							"dataset": {
+								"referenceName": "casesdata",
+								"type": "DatasetReference"
+							},
+							"name": "sink3"
+						}
+					],
+					"transformations": [
+						{
+							"name": "union1"
+						},
+						{
+							"name": "select1"
+						},
+						{
+							"name": "cases"
+						},
+						{
+							"name": "deaths"
+						},
+						{
+							"name": "recoveries"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          ID as integer,",
+						"          Updated as date,",
+						"          Confirmed as integer,",
+						"          Confirmed_Change as integer,",
+						"          Deaths as integer,",
+						"          Deaths_Change as integer,",
+						"          Recovered as integer,",
+						"          Recovered_Change as integer,",
+						"          Latitude as decimal(10,5),",
+						"          Longitude as decimal(10,5),",
+						"          ISO2 as string,",
+						"          ISO3 as string,",
+						"          Country_Region as string,",
+						"          load_time as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> AzureSQLMetrics",
+						"source(output(",
+						"          ID as integer,",
+						"          Updated as date,",
+						"          Confirmed as integer,",
+						"          Confirmed_Change as integer,",
+						"          Deaths as integer,",
+						"          Deaths_Change as integer,",
+						"          Recovered as integer,",
+						"          Recovered_Change as integer,",
+						"          Latitude as decimal(10,5),",
+						"          Longitude as decimal(10,5),",
+						"          ISO2 as string,",
+						"          ISO3 as string,",
+						"          Country_Region as string,",
+						"          load_time as timestamp",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> OnPremCovid",
+						"AzureSQLMetrics, OnPremCovid union(byName: true)~> union1",
+						"union1 select(mapColumn(",
+						"          ID,",
+						"          Date = Updated,",
+						"          Confirmed,",
+						"          Confirmed_Change,",
+						"          Deaths,",
+						"          Deaths_Change,",
+						"          Recovered,",
+						"          Recovered_Change,",
+						"          Latitude,",
+						"          Longitude,",
+						"          ISO2,",
+						"          CountryCode = ISO3,",
+						"          CountryName = Country_Region,",
+						"          load_time",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 select(mapColumn(",
+						"          CountryName,",
+						"          CountryCode,",
+						"          Date,",
+						"          Confirmed,",
+						"          Confirmed_Change",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cases",
+						"select1 select(mapColumn(",
+						"          CountryName,",
+						"          CountryCode,",
+						"          Date,",
+						"          Deaths,",
+						"          Deaths_Change",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> deaths",
+						"select1 select(mapColumn(",
+						"          CountryName,",
+						"          CountryCode,",
+						"          Date,",
+						"          Recovered,",
+						"          Recovered_Change",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> recoveries",
+						"recoveries sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1",
+						"deaths sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink2",
+						"cases sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink3"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSQLMetrics')]",
+				"[concat(variables('factoryId'), '/datasets/OnPremCovid')]",
+				"[concat(variables('factoryId'), '/datasets/recoveriesdata')]",
+				"[concat(variables('factoryId'), '/datasets/deathsdata')]",
+				"[concat(variables('factoryId'), '/datasets/casesdata')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/GeographyDF')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "AzureSQLCountry",
+								"type": "DatasetReference"
+							},
+							"name": "AzureSQLCountry"
+						},
+						{
+							"dataset": {
+								"referenceName": "OnPremCountry",
+								"type": "DatasetReference"
+							},
+							"name": "OnPremCountry"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "countrydata",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "country"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          Country as string,",
+						"          CountryCode as string,",
+						"          Latitude as decimal(10,5),",
+						"          Longitude as decimal(10,5)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> AzureSQLCountry",
+						"source(output(",
+						"          Country as string,",
+						"          CountryCode as string,",
+						"          Latitude as decimal(10,5),",
+						"          Longitude as decimal(10,5)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> OnPremCountry",
+						"AzureSQLCountry union(byName: true)~> country",
+						"country sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSQLCountry')]",
+				"[concat(variables('factoryId'), '/datasets/OnPremCountry')]",
+				"[concat(variables('factoryId'), '/datasets/countrydata')]"
+			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ODS Creation')]",
@@ -2458,7 +2956,7 @@
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
+						"     ignoreNoFilesFound: true,",
 						"     format: 'parquet') ~> OnPremCountry",
 						"source(output(",
 						"          ID as integer,",
@@ -2478,7 +2976,7 @@
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
+						"     ignoreNoFilesFound: true,",
 						"     format: 'parquet') ~> OnPremCovid",
 						"source(output(",
 						"          DateKey as integer,",
@@ -2504,7 +3002,7 @@
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
-						"     ignoreNoFilesFound: false,",
+						"     ignoreNoFilesFound: true,",
 						"     format: 'parquet') ~> OnPremDates",
 						"AzureSQLCountry, OnPremCountry union(byName: true)~> combAzureSQLCountry",
 						"CosmosDBPolicy select(mapColumn(",
@@ -2712,28 +3210,147 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Parquet32')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/PolicyDF')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
+				"type": "MappingDataFlow",
 				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregate Data",
-						"container": "odscontainer"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": []
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "CosmosDBPolicy",
+								"type": "DatasetReference"
+							},
+							"name": "PolicyData"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "policydata",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "policy"
+						},
+						{
+							"name": "policyextracted"
+						}
+					],
+					"scriptLines": [
+						"source(output(",
+						"          CountryName as string,",
+						"          CountryCode as string,",
+						"          RegionName as string,",
+						"          RegionCode as string,",
+						"          Jurisdiction as string,",
+						"          Date as date,",
+						"          {C1_School closing} as integer,",
+						"          C1_Flag as integer,",
+						"          {C2_Workplace closing} as integer,",
+						"          C2_Flag as integer,",
+						"          {C3_Cancel public events} as integer,",
+						"          C3_Flag as integer,",
+						"          {C4_Restrictions on gatherings} as integer,",
+						"          C4_Flag as integer,",
+						"          {C5_Close public transport} as integer,",
+						"          C5_Flag as integer,",
+						"          {C6_Stay at home requirements} as integer,",
+						"          C6_Flag as integer,",
+						"          {C7_Restrictions on internal movement} as integer,",
+						"          C7_Flag as integer,",
+						"          {C8_International travel controls} as integer,",
+						"          {E1_Income support} as integer,",
+						"          E1_Flag as integer,",
+						"          {E2_Debt contract relief} as integer,",
+						"          {E3_Fiscal measures} as integer,",
+						"          {E4_International support} as integer,",
+						"          {H1_Public information campaigns} as integer,",
+						"          H1_Flag as integer,",
+						"          {H2_Testing policy} as integer,",
+						"          {H3_Contact tracing} as integer,",
+						"          {H4_Emergency investment in healthcare} as integer,",
+						"          {H5_Investment in vaccines} as integer,",
+						"          {H6_Facial Coverings} as integer,",
+						"          H6_Flag as integer,",
+						"          {H7_Vaccination policy} as integer,",
+						"          H7_Flag as integer,",
+						"          {H8_Protection of elderly people} as integer,",
+						"          H8_Flag as integer,",
+						"          M1_Wildcard as integer,",
+						"          StringencyIndex as integer,",
+						"          StringencyIndexForDisplay as integer,",
+						"          StringencyLegacyIndex as integer,",
+						"          StringencyLegacyIndexForDisplay as integer,",
+						"          GovernmentResponseIndex as integer,",
+						"          GovernmentResponseIndexForDisplay as integer,",
+						"          ContainmentHealthIndex as integer,",
+						"          ContainmentHealthIndexForDisplay as integer,",
+						"          EconomicSupportIndex as integer,",
+						"          EconomicSupportIndexForDisplay as integer,",
+						"          id as string,",
+						"          {_rid} as string,",
+						"          {_self} as string,",
+						"          {_etag} as string,",
+						"          {_attachments} as string,",
+						"          {_ts} as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> PolicyData",
+						"PolicyData select(mapColumn(",
+						"          each(patternMatch(`^[^_][a-zA-Z0-9_]*$`, /* All input columns */true()),",
+						"               /* Input name */$$ = $$)",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> policy",
+						"policy select(mapColumn(",
+						"          CountryCode,",
+						"          Date,",
+						"          Jurisdiction,",
+						"          C1_Flag,",
+						"          C2_Flag,",
+						"          C3_Flag,",
+						"          C4_Flag,",
+						"          C5_Flag,",
+						"          C6_Flag,",
+						"          C7_Flag,",
+						"          E1_Flag,",
+						"          H1_Flag,",
+						"          H6_Flag,",
+						"          H7_Flag,",
+						"          H8_Flag,",
+						"          M1_Wildcard,",
+						"          StringencyIndex,",
+						"          StringencyIndexForDisplay,",
+						"          StringencyLegacyIndex,",
+						"          StringencyLegacyIndexForDisplay,",
+						"          GovernmentResponseIndex,",
+						"          GovernmentResponseIndexForDisplay,",
+						"          ContainmentHealthIndex,",
+						"          ContainmentHealthIndexForDisplay,",
+						"          EconomicSupportIndex,",
+						"          EconomicSupportIndexForDisplay",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> policyextracted",
+						"policyextracted sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'parquet',",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+				"[concat(variables('factoryId'), '/datasets/CosmosDBPolicy')]",
+				"[concat(variables('factoryId'), '/datasets/policydata')]"
 			]
 		}
 	]
