@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "country.parquet",
 				"folderPath": "Aggregated Data",
 				"container": "odscontainer"
 			},
