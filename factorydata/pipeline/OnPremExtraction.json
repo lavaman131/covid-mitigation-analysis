@@ -47,7 +47,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Parquet11",
+						"referenceName": "OnPremCountry",
 						"type": "DatasetReference"
 					}
 				]
@@ -104,7 +104,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Parquet21",
+						"referenceName": "OnPremCovid",
 						"type": "DatasetReference"
 					}
 				]
@@ -161,7 +161,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Parquet31",
+						"referenceName": "OnPremDates",
 						"type": "DatasetReference"
 					}
 				]

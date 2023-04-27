@@ -104,7 +104,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Parquet2",
+						"referenceName": "AzureSQLMetrics",
 						"type": "DatasetReference"
 					}
 				]
@@ -161,7 +161,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Parquet3",
+						"referenceName": "AzureSQLDates",
 						"type": "DatasetReference"
 					}
 				]

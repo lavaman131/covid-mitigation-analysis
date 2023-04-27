@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "AzureSQLCountry",
+				"fileName": "AzureSQLCountry.parquet",
 				"container": "azure-sql-db"
 			},
 			"compressionCodec": "snappy"
