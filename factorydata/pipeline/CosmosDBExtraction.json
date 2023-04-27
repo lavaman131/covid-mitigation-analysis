@@ -39,7 +39,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Json1",
+						"referenceName": "ComosDBPolicy",
 						"type": "DatasetReference"
 					}
 				]

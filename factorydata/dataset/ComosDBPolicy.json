@@ -1,5 +1,5 @@
 {
-	"name": "Json1",
+	"name": "ComosDBPolicy",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "covid_policy.json",
+				"fileName": "comosdb_covid_policy.json",
 				"container": "cloud-cosmos-db"
 			}
 		},
