@@ -10,8 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "azure-sql",
-				"container": "raw-data"
+				"fileName": "AzureSQLCountry",
+				"container": "azure-sql-db"
 			},
 			"compressionCodec": "snappy"
 		},
