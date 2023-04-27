@@ -47,7 +47,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Parquet1",
+						"referenceName": "AzureSQLCountry",
 						"type": "DatasetReference"
 					}
 				]
