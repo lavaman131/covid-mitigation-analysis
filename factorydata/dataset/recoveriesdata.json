@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "recoveries.parquet",
 				"folderPath": "Aggregated Data",
 				"container": "odscontainer"
 			},
