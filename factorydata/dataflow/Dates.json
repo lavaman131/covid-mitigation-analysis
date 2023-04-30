@@ -12,7 +12,15 @@
 					"name": "Dates"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ODSDates",
+						"type": "DatasetReference"
+					},
+					"name": "ODSDates"
+				}
+			],
 			"transformations": [
 				{
 					"name": "select1"
@@ -68,7 +76,18 @@
 				"          FiscalYear",
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> select1"
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"select1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          CountryCode as string,",
+				"          Date as date,",
+				"          Confirmed as integer,",
+				"          Confirmed_Change as integer",
+				"     ),",
+				"     format: 'parquet',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> ODSDates"
 			]
 		}
 	}
