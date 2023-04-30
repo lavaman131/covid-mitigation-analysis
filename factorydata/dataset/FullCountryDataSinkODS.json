@@ -10,8 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "Aggregated Data",
-				"container": "odscontainer"
+				"fileName": "dbo.Dates.parquet",
+				"container": "azure-sql-db"
 			},
 			"compressionCodec": "snappy"
 		},

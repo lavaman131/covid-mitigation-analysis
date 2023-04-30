@@ -18,7 +18,7 @@
 						"referenceName": "ODSDates",
 						"type": "DatasetReference"
 					},
-					"name": "ODSDates"
+					"name": "sink1"
 				}
 			],
 			"transformations": [
@@ -86,8 +86,10 @@
 				"          Confirmed_Change as integer",
 				"     ),",
 				"     format: 'parquet',",
+				"     partitionFileNames:['dates.parquet'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> ODSDates"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
