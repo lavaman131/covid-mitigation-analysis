@@ -708,7 +708,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "dbo.Covid19_Metrics.parquet",
 						"container": "azure-sql-db"
 					},
 					"compressionCodec": "snappy"
@@ -775,6 +774,30 @@
 						"type": "INT96"
 					}
 				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ComosDBPolicy')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "covid_policy.json",
+						"container": "cloud-cosmos-db"
+					}
+				},
+				"schema": {}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
@@ -987,8 +1010,8 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
-						"container": "odscontainer"
+						"fileName": "dbo.Dates.parquet",
+						"container": "azure-sql-db"
 					},
 					"compressionCodec": "snappy"
 				},
@@ -1049,7 +1072,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/Json1')]",
+			"name": "[concat(parameters('factoryName'), '/ODSDates')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -1058,15 +1081,33 @@
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
-				"type": "Json",
+				"type": "Parquet",
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "covid_policy.json",
-						"container": "cloud-cosmos-db"
-					}
+						"folderPath": "Aggregated Data",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
 				},
-				"schema": {}
+				"schema": [
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Date",
+						"type": "DATE"
+					},
+					{
+						"name": "Confirmed",
+						"type": "INT32"
+					},
+					{
+						"name": "Confirmed_Change",
+						"type": "INT32"
+					}
+				]
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
@@ -1086,7 +1127,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "OnPremCountry",
+						"fileName": "dbo.Country.parquet",
 						"container": "on-prem-shir"
 					},
 					"compressionCodec": "snappy"
@@ -1111,92 +1152,6 @@
 						"type": "DECIMAL",
 						"precision": 10,
 						"scale": 5
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/OnPremCovid')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "OnPremCovid",
-						"container": "on-prem-shir"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "ID",
-						"type": "INT32"
-					},
-					{
-						"name": "Updated",
-						"type": "DATE"
-					},
-					{
-						"name": "Confirmed",
-						"type": "INT32"
-					},
-					{
-						"name": "Confirmed_Change",
-						"type": "INT32"
-					},
-					{
-						"name": "Deaths",
-						"type": "INT32"
-					},
-					{
-						"name": "Deaths_Change",
-						"type": "INT32"
-					},
-					{
-						"name": "Recovered",
-						"type": "INT32"
-					},
-					{
-						"name": "Recovered_Change",
-						"type": "INT32"
-					},
-					{
-						"name": "Latitude",
-						"type": "DECIMAL",
-						"precision": 10,
-						"scale": 5
-					},
-					{
-						"name": "Longitude",
-						"type": "DECIMAL",
-						"precision": 10,
-						"scale": 5
-					},
-					{
-						"name": "ISO2",
-						"type": "UTF8"
-					},
-					{
-						"name": "ISO3",
-						"type": "UTF8"
-					},
-					{
-						"name": "Country_Region",
-						"type": "UTF8"
-					},
-					{
-						"name": "load_time",
-						"type": "INT96"
 					}
 				]
 			},
