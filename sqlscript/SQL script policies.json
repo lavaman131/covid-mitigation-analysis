@@ -1,0 +1,17 @@
+{
+	"name": "SQL script policies",
+	"properties": {
+		"content": {
+			"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'odscontainer_coviddatalakestore_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [odscontainer_coviddatalakestore_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://odscontainer@coviddatalakestore.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.factPolicies (\n\t[CountryCode] nvarchar(4000),\n\t[Date] date,\n\t[Jurisdiction] nvarchar(4000),\n\t[C1_Flag] int,\n\t[C2_Flag] int,\n\t[C3_Flag] int,\n\t[C4_Flag] int,\n\t[C5_Flag] int,\n\t[C6_Flag] int,\n\t[C7_Flag] int,\n\t[E1_Flag] int,\n\t[H1_Flag] int,\n\t[H6_Flag] int,\n\t[H7_Flag] int,\n\t[H8_Flag] int,\n\t[M1_Wildcard] int,\n\t[StringencyIndex] int,\n\t[StringencyIndexForDisplay] int,\n\t[StringencyLegacyIndex] int,\n\t[StringencyLegacyIndexForDisplay] int,\n\t[GovernmentResponseIndex] int,\n\t[GovernmentResponseIndexForDisplay] int,\n\t[ContainmentHealthIndex] int,\n\t[ContainmentHealthIndexForDisplay] int,\n\t[EconomicSupportIndex] int,\n\t[EconomicSupportIndexForDisplay] int\n\t)\n\tWITH (\n\tLOCATION = 'policy.parquet',\n\tDATA_SOURCE = [odscontainer_coviddatalakestore_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.factPolicies\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "Covid19",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
