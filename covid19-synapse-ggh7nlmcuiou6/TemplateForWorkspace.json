@@ -1,0 +1,248 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"workspaceName": {
+			"type": "string",
+			"metadata": "Workspace name",
+			"defaultValue": "covid19-synapse-ggh7nlmcuiou6"
+		},
+		"AzureDataLakeStorage1_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'AzureDataLakeStorage1'"
+		},
+		"covid19-synapse-ggh7nlmcuiou6-WorkspaceDefaultSqlServer_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'covid19-synapse-ggh7nlmcuiou6-WorkspaceDefaultSqlServer'",
+			"defaultValue": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=tcp:covid19-synapse-ggh7nlmcuiou6.sql.azuresynapse.net,1433;Initial Catalog=@{linkedService().DBName}"
+		},
+		"AzureDataLakeStorage1_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://coviddatalakestore.dfs.core.windows.net/"
+		},
+		"covid19-synapse-ggh7nlmcuiou6-WorkspaceDefaultStorage_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://covid19ggh7nlmcuiou6.dfs.core.windows.net"
+		}
+	},
+	"variables": {
+		"workspaceId": "[concat('Microsoft.Synapse/workspaces/', parameters('workspaceName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('workspaceName'), '/AzureDataLakeStorage1')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('AzureDataLakeStorage1_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('AzureDataLakeStorage1_accountKey')]"
+					}
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/covid19-synapse-ggh7nlmcuiou6-WorkspaceDefaultSqlServer')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"parameters": {
+					"DBName": {
+						"type": "String"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('covid19-synapse-ggh7nlmcuiou6-WorkspaceDefaultSqlServer_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/covid19-synapse-ggh7nlmcuiou6-WorkspaceDefaultStorage')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('covid19-synapse-ggh7nlmcuiou6-WorkspaceDefaultStorage_properties_typeProperties_url')]"
+				},
+				"connectVia": {
+					"referenceName": "AutoResolveIntegrationRuntime",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('workspaceId'), '/integrationRuntimes/AutoResolveIntegrationRuntime')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/AutoResolveIntegrationRuntime')]",
+			"type": "Microsoft.Synapse/workspaces/integrationRuntimes",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/WorkspaceSystemIdentity')]",
+			"type": "Microsoft.Synapse/workspaces/credentials",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"type": "ManagedIdentity",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script cases')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'odscontainer_coviddatalakestore_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [odscontainer_coviddatalakestore_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://odscontainer@coviddatalakestore.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.dimCases (\n\t[CountryCode] nvarchar(4000),\n\t[Date] date,\n\t[Confirmed] int,\n\t[Confirmed_Change] int\n\t)\n\tWITH (\n\tLOCATION = 'cases.parquet',\n\tDATA_SOURCE = [odscontainer_coviddatalakestore_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.dimCases\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Covid19",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script country')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'odscontainer_coviddatalakestore_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [odscontainer_coviddatalakestore_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://odscontainer@coviddatalakestore.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.dimGeography (\n\t[Country] nvarchar(4000),\n\t[CountryCode] nvarchar(4000),\n\t[Latitude] numeric(10,5),\n\t[Longitude] numeric(10,5)\n\t)\n\tWITH (\n\tLOCATION = 'country.parquet',\n\tDATA_SOURCE = [odscontainer_coviddatalakestore_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.dimGeography\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Covid19",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script dates')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'odscontainer_coviddatalakestore_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [odscontainer_coviddatalakestore_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://odscontainer@coviddatalakestore.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.dimDate (\n\t[DateKey] int,\n\t[Date] date,\n\t[isWeekDay] bit,\n\t[DayOfWeek] int,\n\t[DayOfMonth] int,\n\t[DayOfQuarter] int,\n\t[DayOfYear] int,\n\t[DayName] nvarchar(4000),\n\t[WeekOfYear] int,\n\t[WeekName] nvarchar(4000),\n\t[MonthOfYear] int,\n\t[MonthName] nvarchar(4000),\n\t[CalendarQuarter] int,\n\t[CalendarQuarterName] nvarchar(4000),\n\t[CalendarYear] int,\n\t[FiscalMonth] int,\n\t[FiscalMonthName] nvarchar(4000),\n\t[FiscalQuarter] int,\n\t[FiscalQuarterName] nvarchar(4000),\n\t[FiscalYear] int\n\t)\n\tWITH (\n\tLOCATION = 'dates.parquet',\n\tDATA_SOURCE = [odscontainer_coviddatalakestore_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.dimDate\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Covid19",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script deaths')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'odscontainer_coviddatalakestore_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [odscontainer_coviddatalakestore_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://odscontainer@coviddatalakestore.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.dimDeaths (\n\t[CountryCode] nvarchar(4000),\n\t[Date] date,\n\t[Deaths] int,\n\t[Deaths_Change] int\n\t)\n\tWITH (\n\tLOCATION = 'deaths.parquet',\n\tDATA_SOURCE = [odscontainer_coviddatalakestore_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.dimDeaths\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Covid19",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script policies')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'odscontainer_coviddatalakestore_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [odscontainer_coviddatalakestore_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://odscontainer@coviddatalakestore.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.factPolicies (\n\t[CountryCode] nvarchar(4000),\n\t[Date] date,\n\t[Jurisdiction] nvarchar(4000),\n\t[C1_Flag] int,\n\t[C2_Flag] int,\n\t[C3_Flag] int,\n\t[C4_Flag] int,\n\t[C5_Flag] int,\n\t[C6_Flag] int,\n\t[C7_Flag] int,\n\t[E1_Flag] int,\n\t[H1_Flag] int,\n\t[H6_Flag] int,\n\t[H7_Flag] int,\n\t[H8_Flag] int,\n\t[M1_Wildcard] int,\n\t[StringencyIndex] int,\n\t[StringencyIndexForDisplay] int,\n\t[StringencyLegacyIndex] int,\n\t[StringencyLegacyIndexForDisplay] int,\n\t[GovernmentResponseIndex] int,\n\t[GovernmentResponseIndexForDisplay] int,\n\t[ContainmentHealthIndex] int,\n\t[ContainmentHealthIndexForDisplay] int,\n\t[EconomicSupportIndex] int,\n\t[EconomicSupportIndexForDisplay] int\n\t)\n\tWITH (\n\tLOCATION = 'policy.parquet',\n\tDATA_SOURCE = [odscontainer_coviddatalakestore_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.factPolicies\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Covid19",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('workspaceName'), '/SQL script recoveries')]",
+			"type": "Microsoft.Synapse/workspaces/sqlscripts",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"content": {
+					"query": "IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'odscontainer_coviddatalakestore_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [odscontainer_coviddatalakestore_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://odscontainer@coviddatalakestore.dfs.core.windows.net' \n\t)\nGO\n\nCREATE EXTERNAL TABLE dbo.dimRecoveries (\n\t[CountryCode] nvarchar(4000),\n\t[Date] date,\n\t[Recovered] int,\n\t[Recovered_Change] int\n\t)\n\tWITH (\n\tLOCATION = 'recoveries.parquet',\n\tDATA_SOURCE = [odscontainer_coviddatalakestore_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\nGO\n\n\nSELECT TOP 100 * FROM dbo.dimRecoveries\nGO",
+					"metadata": {
+						"language": "sql"
+					},
+					"currentConnection": {
+						"databaseName": "Covid19",
+						"poolName": "Built-in"
+					},
+					"resultLimit": 5000
+				},
+				"type": "SqlQuery"
+			},
+			"dependsOn": []
+		}
+	]
+}
