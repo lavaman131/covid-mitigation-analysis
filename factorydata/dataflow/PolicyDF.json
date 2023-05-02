@@ -136,7 +136,7 @@
 				"          Confirmed_Change as integer",
 				"     ),",
 				"     format: 'parquet',",
-				"     filePattern:'policy[n]',",
+				"     filePattern:'policy[n].parquet',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]

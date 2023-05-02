@@ -64,7 +64,7 @@
 				"          Confirmed_Change as integer",
 				"     ),",
 				"     format: 'parquet',",
-				"     filePattern:'country[n]',",
+				"     filePattern:'country[n].parquet',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
