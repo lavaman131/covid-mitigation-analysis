@@ -65,6 +65,7 @@
 				"     ),",
 				"     format: 'parquet',",
 				"     filePattern:'country[n].parquet',",
+				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]

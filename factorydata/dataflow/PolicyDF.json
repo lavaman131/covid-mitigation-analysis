@@ -137,6 +137,7 @@
 				"     ),",
 				"     format: 'parquet',",
 				"     filePattern:'policy[n].parquet',",
+				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
