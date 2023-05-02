@@ -152,7 +152,7 @@
 				"          Confirmed_Change as integer",
 				"     ),",
 				"     format: 'parquet',",
-				"     filePattern:'recoveries[n]',",
+				"     filePattern:'recoveries[n].parquet',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1",
 				"deaths sink(allowSchemaDrift: true,",
@@ -164,7 +164,7 @@
 				"          Confirmed_Change as integer",
 				"     ),",
 				"     format: 'parquet',",
-				"     filePattern:'deaths[n]',",
+				"     filePattern:'deaths[n].parquet',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink2",
 				"cases sink(allowSchemaDrift: true,",
@@ -176,7 +176,7 @@
 				"          Confirmed_Change as integer",
 				"     ),",
 				"     format: 'parquet',",
-				"     filePattern:'cases[n]',",
+				"     filePattern:'cases[n].parquet',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink3"
 			]
