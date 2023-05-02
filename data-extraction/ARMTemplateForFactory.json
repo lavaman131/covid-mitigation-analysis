@@ -1603,7 +1603,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -2321,7 +2320,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -2363,7 +2361,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -2405,7 +2402,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -2447,7 +2443,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -2489,7 +2484,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -2770,6 +2764,7 @@
 						"     ),",
 						"     format: 'parquet',",
 						"     filePattern:'recoveries[n].parquet',",
+						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> sink1",
 						"deaths sink(allowSchemaDrift: true,",
@@ -2782,6 +2777,7 @@
 						"     ),",
 						"     format: 'parquet',",
 						"     filePattern:'deaths[n].parquet',",
+						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> sink2",
 						"cases sink(allowSchemaDrift: true,",
@@ -2794,6 +2790,7 @@
 						"     ),",
 						"     format: 'parquet',",
 						"     filePattern:'cases[n].parquet',",
+						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> sink3"
 					]
@@ -2898,6 +2895,7 @@
 						"     ),",
 						"     format: 'parquet',",
 						"     filePattern:'dates[n].parquet',",
+						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
@@ -2977,6 +2975,7 @@
 						"     ),",
 						"     format: 'parquet',",
 						"     filePattern:'country[n].parquet',",
+						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
@@ -3641,6 +3640,7 @@
 						"     ),",
 						"     format: 'parquet',",
 						"     filePattern:'policy[n].parquet',",
+						"     truncate: true,",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]

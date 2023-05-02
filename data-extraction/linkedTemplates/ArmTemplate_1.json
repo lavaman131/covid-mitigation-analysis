@@ -632,7 +632,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -672,7 +671,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -712,7 +710,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -752,7 +749,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
@@ -792,7 +788,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"folderPath": "Aggregated Data",
 						"container": "odscontainer"
 					},
 					"compressionCodec": "snappy"
