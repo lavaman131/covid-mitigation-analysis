@@ -153,7 +153,6 @@
 				"     ),",
 				"     format: 'parquet',",
 				"     filePattern:'recoveries[n].parquet',",
-				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1",
 				"deaths sink(allowSchemaDrift: true,",
@@ -166,7 +165,6 @@
 				"     ),",
 				"     format: 'parquet',",
 				"     filePattern:'deaths[n].parquet',",
-				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink2",
 				"cases sink(allowSchemaDrift: true,",
@@ -179,7 +177,6 @@
 				"     ),",
 				"     format: 'parquet',",
 				"     filePattern:'cases[n].parquet',",
-				"     truncate: true,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink3"
 			]
