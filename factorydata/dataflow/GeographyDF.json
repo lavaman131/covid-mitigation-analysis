@@ -64,9 +64,10 @@
 				"          Confirmed_Change as integer",
 				"     ),",
 				"     format: 'parquet',",
-				"     filePattern:'country[n].parquet',",
+				"     partitionFileNames:['country.parquet'],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> sink1"
 			]
 		}
 	}
