@@ -2769,10 +2769,9 @@
 						"          Confirmed_Change as integer",
 						"     ),",
 						"     format: 'parquet',",
-						"     partitionFileNames:['recoveries.parquet'],",
+						"     filePattern:'recoveries[n]',",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink1",
+						"     skipDuplicateMapOutputs: true) ~> sink1",
 						"deaths sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
@@ -2782,10 +2781,9 @@
 						"          Confirmed_Change as integer",
 						"     ),",
 						"     format: 'parquet',",
-						"     partitionFileNames:['deaths.parquet'],",
+						"     filePattern:'deaths[n]',",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink2",
+						"     skipDuplicateMapOutputs: true) ~> sink2",
 						"cases sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
@@ -2795,10 +2793,9 @@
 						"          Confirmed_Change as integer",
 						"     ),",
 						"     format: 'parquet',",
-						"     partitionFileNames:['cases.parquet'],",
+						"     filePattern:'cases[n]',",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink3"
+						"     skipDuplicateMapOutputs: true) ~> sink3"
 					]
 				}
 			},
@@ -2900,10 +2897,9 @@
 						"          Confirmed_Change as integer",
 						"     ),",
 						"     format: 'parquet',",
-						"     partitionFileNames:['dates.parquet'],",
+						"     filePattern:'dates[n]',",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink1"
+						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
 				}
 			},
@@ -2980,10 +2976,9 @@
 						"          Confirmed_Change as integer",
 						"     ),",
 						"     format: 'parquet',",
-						"     partitionFileNames:['country.parquet'],",
+						"     filePattern:'country[n]',",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink1"
+						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
 				}
 			},
@@ -3645,10 +3640,9 @@
 						"          Confirmed_Change as integer",
 						"     ),",
 						"     format: 'parquet',",
-						"     partitionFileNames:['policy.parquet'],",
+						"     filePattern:'policy[n]',",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true,",
-						"     partitionBy('hash', 1)) ~> sink1"
+						"     skipDuplicateMapOutputs: true) ~> sink1"
 					]
 				}
 			},
