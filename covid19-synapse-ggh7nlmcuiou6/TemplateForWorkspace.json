@@ -53,6 +53,20 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('workspaceName'), '/Covid19PowerBI')]",
+			"type": "Microsoft.Synapse/workspaces/linkedServices",
+			"apiVersion": "2019-06-01-preview",
+			"properties": {
+				"annotations": [],
+				"type": "PowerBIWorkspace",
+				"typeProperties": {
+					"workspaceID": "",
+					"tenantID": "d57d32cc-c121-488f-b07b-dfe705680c71"
+				}
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('workspaceName'), '/covid19-synapse-ggh7nlmcuiou6-WorkspaceDefaultSqlServer')]",
 			"type": "Microsoft.Synapse/workspaces/linkedServices",
 			"apiVersion": "2019-06-01-preview",
