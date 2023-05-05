@@ -427,8 +427,7 @@
 									"OnPremDates": {},
 									"AzureSQLDates": {},
 									"sink1": {}
-								},
-								"linkedServiceParameters": {}
+								}
 							},
 							"staging": {},
 							"compute": {
@@ -2433,6 +2432,244 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/etl_policy_data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "policy.parquet",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "CountryName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Jurisdiction",
+						"type": "UTF8"
+					},
+					{
+						"name": "Date",
+						"type": "DATE"
+					},
+					{
+						"name": "C1Schoolclosing",
+						"type": "INT32"
+					},
+					{
+						"name": "C1Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C2Workplaceclosing",
+						"type": "INT32"
+					},
+					{
+						"name": "C2Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C3Cancelpublicevents",
+						"type": "INT32"
+					},
+					{
+						"name": "C3Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C4Restrictionsongatherings",
+						"type": "INT32"
+					},
+					{
+						"name": "C4Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C5Closepublictransport",
+						"type": "INT32"
+					},
+					{
+						"name": "C5Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C6Stayathomerequirements",
+						"type": "INT32"
+					},
+					{
+						"name": "C6Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C7Restrictionsoninternalmovement",
+						"type": "INT32"
+					},
+					{
+						"name": "C7Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C8Internationaltravelcontrols",
+						"type": "INT32"
+					},
+					{
+						"name": "E1Incomesupport",
+						"type": "INT32"
+					},
+					{
+						"name": "E1Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "E2Debtcontractrelief",
+						"type": "INT32"
+					},
+					{
+						"name": "E3Fiscalmeasures",
+						"type": "INT32"
+					},
+					{
+						"name": "E4Internationalsupport",
+						"type": "INT32"
+					},
+					{
+						"name": "H1Publicinformationcampaigns",
+						"type": "INT32"
+					},
+					{
+						"name": "H1Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "H2Testingpolicy",
+						"type": "INT32"
+					},
+					{
+						"name": "H3Contacttracing",
+						"type": "INT32"
+					},
+					{
+						"name": "H4Emergencyinvestmentinhealthcare",
+						"type": "INT32"
+					},
+					{
+						"name": "H5Investmentinvaccines",
+						"type": "INT32"
+					},
+					{
+						"name": "H6FacialCoverings",
+						"type": "INT32"
+					},
+					{
+						"name": "H6Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "H7Vaccinationpolicy",
+						"type": "INT32"
+					},
+					{
+						"name": "H7Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "H8Protectionofelderlypeople",
+						"type": "INT32"
+					},
+					{
+						"name": "H8Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "M1Wildcard",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyLegacyIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyLegacyIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "GovernmentResponseIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "GovernmentResponseIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "ContainmentHealthIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "ContainmentHealthIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "EconomicSupportIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "EconomicSupportIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "id",
+						"type": "UTF8"
+					},
+					{
+						"name": "_rid",
+						"type": "UTF8"
+					},
+					{
+						"name": "_self",
+						"type": "UTF8"
+					},
+					{
+						"name": "_etag",
+						"type": "UTF8"
+					},
+					{
+						"name": "_attachments",
+						"type": "UTF8"
+					},
+					{
+						"name": "_ts",
+						"type": "INT32"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/policydata')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -3722,39 +3959,39 @@
 						"          CountryCode,",
 						"          Jurisdiction,",
 						"          Date,",
-						"          C1Schoolclosing = {C1_School closing},",
-						"          C1Flag = C1_Flag,",
-						"          C2Workplaceclosing = {C2_Workplace closing},",
-						"          C2Flag = C2_Flag,",
-						"          C3Cancelpublicevents = {C3_Cancel public events},",
-						"          C3Flag = C3_Flag,",
-						"          C4Restrictionsongatherings = {C4_Restrictions on gatherings},",
-						"          C4Flag = C4_Flag,",
-						"          C5Closepublictransport = {C5_Close public transport},",
-						"          C5Flag = C5_Flag,",
-						"          C6Stayathomerequirements = {C6_Stay at home requirements},",
-						"          C6Flag = C6_Flag,",
-						"          C7Restrictionsoninternalmovement = {C7_Restrictions on internal movement},",
-						"          C7Flag = C7_Flag,",
-						"          C8Internationaltravelcontrols = {C8_International travel controls},",
-						"          E1Incomesupport = {E1_Income support},",
-						"          E1Flag = E1_Flag,",
-						"          E2Debtcontractrelief = {E2_Debt contract relief},",
-						"          E3Fiscalmeasures = {E3_Fiscal measures},",
-						"          E4Internationalsupport = {E4_International support},",
-						"          H1Publicinformationcampaigns = {H1_Public information campaigns},",
-						"          H1Flag = H1_Flag,",
-						"          H2Testingpolicy = {H2_Testing policy},",
-						"          H3Contacttracing = {H3_Contact tracing},",
-						"          H4Emergencyinvestmentinhealthcare = {H4_Emergency investment in healthcare},",
-						"          H5Investmentinvaccines = {H5_Investment in vaccines},",
-						"          H6FacialCoverings = {H6_Facial Coverings},",
-						"          H6Flag = H6_Flag,",
-						"          H7Vaccinationpolicy = {H7_Vaccination policy},",
-						"          H7Flag = H7_Flag,",
-						"          H8Protectionofelderlypeople = {H8_Protection of elderly people},",
-						"          H8Flag = H8_Flag,",
-						"          M1Wildcard = M1_Wildcard,",
+						"          C1_School_closing = {C1_School closing},",
+						"          C1_Flag,",
+						"          C2_Workplace_closing = {C2_Workplace closing},",
+						"          C2_Flag,",
+						"          C3_Cancel_public_events = {C3_Cancel public events},",
+						"          C3_Flag,",
+						"          C4_Restrictions_on_gatherings = {C4_Restrictions on gatherings},",
+						"          C4_Flag,",
+						"          C5_Close_public_transport = {C5_Close public transport},",
+						"          C5_Flag,",
+						"          C6_Stay_at_home_requirements = {C6_Stay at home requirements},",
+						"          C6_Flag,",
+						"          C7_Restrictions_on_internal_movement = {C7_Restrictions on internal movement},",
+						"          C7_Flag,",
+						"          C8_International_travel_controls = {C8_International travel controls},",
+						"          E1_Income_support = {E1_Income support},",
+						"          E1_Flag,",
+						"          E2_Debt_contract_relief = {E2_Debt contract relief},",
+						"          E3_Fiscal_measures = {E3_Fiscal measures},",
+						"          E4_International_support = {E4_International support},",
+						"          H1_Public_information_campaigns = {H1_Public information campaigns},",
+						"          H1_Flag,",
+						"          H2_Testing_policy = {H2_Testing policy},",
+						"          H3_Contact_tracing = {H3_Contact tracing},",
+						"          H4_Emergency_investment_in_healthcare = {H4_Emergency investment in healthcare},",
+						"          H5_Investment_in_vaccines = {H5_Investment in vaccines},",
+						"          H6_Facial_Coverings = {H6_Facial Coverings},",
+						"          H6_Flag,",
+						"          H7_Vaccination_policy = {H7_Vaccination policy},",
+						"          H7_Flag,",
+						"          H8_Protection_of_elderly_people = {H8_Protection of elderly people},",
+						"          H8_Flag,",
+						"          M1_Wildcard,",
 						"          StringencyIndex,",
 						"          StringencyIndexForDisplay,",
 						"          StringencyLegacyIndex,",
@@ -3787,244 +4024,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/CosmosDBPolicy')]",
 				"[concat(variables('factoryId'), '/datasets/policydata')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/etl_policy_data')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureBlobStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "Parquet",
-				"typeProperties": {
-					"location": {
-						"type": "AzureBlobStorageLocation",
-						"fileName": "policy.parquet",
-						"container": "odscontainer"
-					},
-					"compressionCodec": "snappy"
-				},
-				"schema": [
-					{
-						"name": "CountryName",
-						"type": "UTF8"
-					},
-					{
-						"name": "CountryCode",
-						"type": "UTF8"
-					},
-					{
-						"name": "Jurisdiction",
-						"type": "UTF8"
-					},
-					{
-						"name": "Date",
-						"type": "DATE"
-					},
-					{
-						"name": "C1Schoolclosing",
-						"type": "INT32"
-					},
-					{
-						"name": "C1Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "C2Workplaceclosing",
-						"type": "INT32"
-					},
-					{
-						"name": "C2Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "C3Cancelpublicevents",
-						"type": "INT32"
-					},
-					{
-						"name": "C3Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "C4Restrictionsongatherings",
-						"type": "INT32"
-					},
-					{
-						"name": "C4Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "C5Closepublictransport",
-						"type": "INT32"
-					},
-					{
-						"name": "C5Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "C6Stayathomerequirements",
-						"type": "INT32"
-					},
-					{
-						"name": "C6Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "C7Restrictionsoninternalmovement",
-						"type": "INT32"
-					},
-					{
-						"name": "C7Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "C8Internationaltravelcontrols",
-						"type": "INT32"
-					},
-					{
-						"name": "E1Incomesupport",
-						"type": "INT32"
-					},
-					{
-						"name": "E1Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "E2Debtcontractrelief",
-						"type": "INT32"
-					},
-					{
-						"name": "E3Fiscalmeasures",
-						"type": "INT32"
-					},
-					{
-						"name": "E4Internationalsupport",
-						"type": "INT32"
-					},
-					{
-						"name": "H1Publicinformationcampaigns",
-						"type": "INT32"
-					},
-					{
-						"name": "H1Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "H2Testingpolicy",
-						"type": "INT32"
-					},
-					{
-						"name": "H3Contacttracing",
-						"type": "INT32"
-					},
-					{
-						"name": "H4Emergencyinvestmentinhealthcare",
-						"type": "INT32"
-					},
-					{
-						"name": "H5Investmentinvaccines",
-						"type": "INT32"
-					},
-					{
-						"name": "H6FacialCoverings",
-						"type": "INT32"
-					},
-					{
-						"name": "H6Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "H7Vaccinationpolicy",
-						"type": "INT32"
-					},
-					{
-						"name": "H7Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "H8Protectionofelderlypeople",
-						"type": "INT32"
-					},
-					{
-						"name": "H8Flag",
-						"type": "INT32"
-					},
-					{
-						"name": "M1Wildcard",
-						"type": "INT32"
-					},
-					{
-						"name": "StringencyIndex",
-						"type": "INT32"
-					},
-					{
-						"name": "StringencyIndexForDisplay",
-						"type": "INT32"
-					},
-					{
-						"name": "StringencyLegacyIndex",
-						"type": "INT32"
-					},
-					{
-						"name": "StringencyLegacyIndexForDisplay",
-						"type": "INT32"
-					},
-					{
-						"name": "GovernmentResponseIndex",
-						"type": "INT32"
-					},
-					{
-						"name": "GovernmentResponseIndexForDisplay",
-						"type": "INT32"
-					},
-					{
-						"name": "ContainmentHealthIndex",
-						"type": "INT32"
-					},
-					{
-						"name": "ContainmentHealthIndexForDisplay",
-						"type": "INT32"
-					},
-					{
-						"name": "EconomicSupportIndex",
-						"type": "INT32"
-					},
-					{
-						"name": "EconomicSupportIndexForDisplay",
-						"type": "INT32"
-					},
-					{
-						"name": "id",
-						"type": "UTF8"
-					},
-					{
-						"name": "_rid",
-						"type": "UTF8"
-					},
-					{
-						"name": "_self",
-						"type": "UTF8"
-					},
-					{
-						"name": "_etag",
-						"type": "UTF8"
-					},
-					{
-						"name": "_attachments",
-						"type": "UTF8"
-					},
-					{
-						"name": "_ts",
-						"type": "INT32"
-					}
-				]
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
 			]
 		}
 	]
