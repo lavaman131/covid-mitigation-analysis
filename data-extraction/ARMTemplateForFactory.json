@@ -424,8 +424,11 @@
 								"parameters": {},
 								"datasetParameters": {
 									"Dates": {},
+									"OnPremDates": {},
+									"AzureSQLDates": {},
 									"sink1": {}
-								}
+								},
+								"linkedServiceParameters": {}
 							},
 							"staging": {},
 							"compute": {
@@ -640,6 +643,53 @@
 				"[concat(variables('factoryId'), '/datasets/OnPremCovid')]",
 				"[concat(variables('factoryId'), '/datasets/SqlServerTable3')]",
 				"[concat(variables('factoryId'), '/datasets/OnPremDates')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/policyfix')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PolicyDF",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "PolicyDF",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"PolicyData": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/PolicyDF')]"
 			]
 		},
 		{
@@ -2658,9 +2708,6 @@
 							"name": "union1"
 						},
 						{
-							"name": "select1"
-						},
-						{
 							"name": "cases"
 						},
 						{
@@ -2668,6 +2715,9 @@
 						},
 						{
 							"name": "recoveries"
+						},
+						{
+							"name": "select2"
 						}
 					],
 					"scriptLines": [
@@ -2712,6 +2762,30 @@
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> OnPremCovid",
 						"AzureSQLMetrics, OnPremCovid union(byName: true)~> union1",
+						"select2 select(mapColumn(",
+						"          CountryCode,",
+						"          Date,",
+						"          Confirmed,",
+						"          Confirmed_Change",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> cases",
+						"select2 select(mapColumn(",
+						"          CountryCode,",
+						"          Date,",
+						"          Deaths,",
+						"          Deaths_Change",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> deaths",
+						"select2 select(mapColumn(",
+						"          CountryCode,",
+						"          Date,",
+						"          Recovered,",
+						"          Recovered_Change",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> recoveries",
 						"union1 select(mapColumn(",
 						"          ID,",
 						"          Date = Updated,",
@@ -2729,31 +2803,7 @@
 						"          load_time",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 select(mapColumn(",
-						"          CountryCode,",
-						"          Date,",
-						"          Confirmed,",
-						"          Confirmed_Change",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> cases",
-						"select1 select(mapColumn(",
-						"          CountryCode,",
-						"          Date,",
-						"          Deaths,",
-						"          Deaths_Change",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> deaths",
-						"select1 select(mapColumn(",
-						"          CountryCode,",
-						"          Date,",
-						"          Recovered,",
-						"          Recovered_Change",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> recoveries",
+						"     skipDuplicateMapOutputs: true) ~> select2",
 						"recoveries sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
@@ -2814,10 +2864,24 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "AzureSQLDates",
+								"referenceName": "CosmosDBPolicy",
 								"type": "DatasetReference"
 							},
 							"name": "Dates"
+						},
+						{
+							"dataset": {
+								"referenceName": "OnPremDates",
+								"type": "DatasetReference"
+							},
+							"name": "OnPremDates"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSQLDates",
+								"type": "DatasetReference"
+							},
+							"name": "AzureSQLDates"
 						}
 					],
 					"sinks": [
@@ -2832,9 +2896,79 @@
 					"transformations": [
 						{
 							"name": "select1"
+						},
+						{
+							"name": "union1"
+						},
+						{
+							"name": "join1"
+						},
+						{
+							"name": "select2"
 						}
 					],
 					"scriptLines": [
+						"source(output(",
+						"          CountryName as string,",
+						"          CountryCode as string,",
+						"          RegionName as string,",
+						"          RegionCode as string,",
+						"          Jurisdiction as string,",
+						"          Date as date,",
+						"          {C1_School closing} as integer,",
+						"          C1_Flag as integer,",
+						"          {C2_Workplace closing} as integer,",
+						"          C2_Flag as integer,",
+						"          {C3_Cancel public events} as integer,",
+						"          C3_Flag as integer,",
+						"          {C4_Restrictions on gatherings} as integer,",
+						"          C4_Flag as integer,",
+						"          {C5_Close public transport} as integer,",
+						"          C5_Flag as integer,",
+						"          {C6_Stay at home requirements} as integer,",
+						"          C6_Flag as integer,",
+						"          {C7_Restrictions on internal movement} as integer,",
+						"          C7_Flag as integer,",
+						"          {C8_International travel controls} as integer,",
+						"          {E1_Income support} as integer,",
+						"          E1_Flag as integer,",
+						"          {E2_Debt contract relief} as integer,",
+						"          {E3_Fiscal measures} as integer,",
+						"          {E4_International support} as integer,",
+						"          {H1_Public information campaigns} as integer,",
+						"          H1_Flag as integer,",
+						"          {H2_Testing policy} as integer,",
+						"          {H3_Contact tracing} as integer,",
+						"          {H4_Emergency investment in healthcare} as integer,",
+						"          {H5_Investment in vaccines} as integer,",
+						"          {H6_Facial Coverings} as integer,",
+						"          H6_Flag as integer,",
+						"          {H7_Vaccination policy} as integer,",
+						"          H7_Flag as integer,",
+						"          {H8_Protection of elderly people} as integer,",
+						"          H8_Flag as integer,",
+						"          M1_Wildcard as integer,",
+						"          StringencyIndex as integer,",
+						"          StringencyIndexForDisplay as integer,",
+						"          StringencyLegacyIndex as integer,",
+						"          StringencyLegacyIndexForDisplay as integer,",
+						"          GovernmentResponseIndex as integer,",
+						"          GovernmentResponseIndexForDisplay as integer,",
+						"          ContainmentHealthIndex as integer,",
+						"          ContainmentHealthIndexForDisplay as integer,",
+						"          EconomicSupportIndex as integer,",
+						"          EconomicSupportIndexForDisplay as integer,",
+						"          id as string,",
+						"          {_rid} as string,",
+						"          {_self} as string,",
+						"          {_etag} as string,",
+						"          {_attachments} as string,",
+						"          {_ts} as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     documentForm: 'documentPerLine') ~> Dates",
 						"source(output(",
 						"          DateKey as integer,",
 						"          FullDate as date,",
@@ -2860,8 +2994,45 @@
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
-						"     format: 'parquet') ~> Dates",
+						"     format: 'parquet') ~> OnPremDates",
+						"source(output(",
+						"          DateKey as integer,",
+						"          FullDate as date,",
+						"          isWeekDay as boolean,",
+						"          DayOfWeek as integer,",
+						"          DayOfMonth as integer,",
+						"          DayOfQuarter as integer,",
+						"          DayOfYear as integer,",
+						"          DayName as string,",
+						"          WeekOfYear as integer,",
+						"          WeekName as string,",
+						"          MonthOfYear as integer,",
+						"          MonthName as string,",
+						"          CalendarQuarter as integer,",
+						"          CalendarQuarterName as string,",
+						"          CalendarYear as integer,",
+						"          FiscalMonth as integer,",
+						"          FiscalMonthName as string,",
+						"          FiscalQuarter as integer,",
+						"          FiscalQuarterName as string,",
+						"          FiscalYear as integer",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     ignoreNoFilesFound: false,",
+						"     format: 'parquet') ~> AzureSQLDates",
 						"Dates select(mapColumn(",
+						"          Date",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"OnPremDates, AzureSQLDates union(byName: true)~> union1",
+						"select1, select2 join(select1@Date == select2@Date,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join1",
+						"union1 select(mapColumn(",
 						"          DateKey,",
 						"          Date = FullDate,",
 						"          isWeekDay,",
@@ -2884,8 +3055,8 @@
 						"          FiscalYear",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"select1 sink(allowSchemaDrift: true,",
+						"     skipDuplicateMapOutputs: true) ~> select2",
+						"join1 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
 						"          CountryCode as string,",
@@ -2902,6 +3073,8 @@
 				}
 			},
 			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CosmosDBPolicy')]",
+				"[concat(variables('factoryId'), '/datasets/OnPremDates')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSQLDates')]",
 				"[concat(variables('factoryId'), '/datasets/ODSDates')]"
 			]
@@ -2964,7 +3137,7 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> OnPremCountry",
-						"AzureSQLCountry union(byName: true)~> country",
+						"AzureSQLCountry, OnPremCountry union(byName: true)~> country",
 						"country sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
@@ -3638,13 +3811,7 @@
 						"          ContainmentHealthIndex,",
 						"          ContainmentHealthIndexForDisplay,",
 						"          EconomicSupportIndex,",
-						"          EconomicSupportIndexForDisplay,",
-						"          id,",
-						"          {_rid},",
-						"          {_self},",
-						"          {_etag},",
-						"          {_attachments},",
-						"          {_ts}",
+						"          EconomicSupportIndexForDisplay",
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> policy",
@@ -3670,50 +3837,241 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/policyfix')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/etl_policy_data')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "PolicyDF",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "PolicyDF",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"PolicyData": {},
-									"sink1": {}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
 				},
-				"annotations": []
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "policy.parquet",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "CountryName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Jurisdiction",
+						"type": "UTF8"
+					},
+					{
+						"name": "Date",
+						"type": "DATE"
+					},
+					{
+						"name": "C1Schoolclosing",
+						"type": "INT32"
+					},
+					{
+						"name": "C1Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C2Workplaceclosing",
+						"type": "INT32"
+					},
+					{
+						"name": "C2Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C3Cancelpublicevents",
+						"type": "INT32"
+					},
+					{
+						"name": "C3Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C4Restrictionsongatherings",
+						"type": "INT32"
+					},
+					{
+						"name": "C4Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C5Closepublictransport",
+						"type": "INT32"
+					},
+					{
+						"name": "C5Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C6Stayathomerequirements",
+						"type": "INT32"
+					},
+					{
+						"name": "C6Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C7Restrictionsoninternalmovement",
+						"type": "INT32"
+					},
+					{
+						"name": "C7Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C8Internationaltravelcontrols",
+						"type": "INT32"
+					},
+					{
+						"name": "E1Incomesupport",
+						"type": "INT32"
+					},
+					{
+						"name": "E1Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "E2Debtcontractrelief",
+						"type": "INT32"
+					},
+					{
+						"name": "E3Fiscalmeasures",
+						"type": "INT32"
+					},
+					{
+						"name": "E4Internationalsupport",
+						"type": "INT32"
+					},
+					{
+						"name": "H1Publicinformationcampaigns",
+						"type": "INT32"
+					},
+					{
+						"name": "H1Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "H2Testingpolicy",
+						"type": "INT32"
+					},
+					{
+						"name": "H3Contacttracing",
+						"type": "INT32"
+					},
+					{
+						"name": "H4Emergencyinvestmentinhealthcare",
+						"type": "INT32"
+					},
+					{
+						"name": "H5Investmentinvaccines",
+						"type": "INT32"
+					},
+					{
+						"name": "H6FacialCoverings",
+						"type": "INT32"
+					},
+					{
+						"name": "H6Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "H7Vaccinationpolicy",
+						"type": "INT32"
+					},
+					{
+						"name": "H7Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "H8Protectionofelderlypeople",
+						"type": "INT32"
+					},
+					{
+						"name": "H8Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "M1Wildcard",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyLegacyIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyLegacyIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "GovernmentResponseIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "GovernmentResponseIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "ContainmentHealthIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "ContainmentHealthIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "EconomicSupportIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "EconomicSupportIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "id",
+						"type": "UTF8"
+					},
+					{
+						"name": "_rid",
+						"type": "UTF8"
+					},
+					{
+						"name": "_self",
+						"type": "UTF8"
+					},
+					{
+						"name": "_etag",
+						"type": "UTF8"
+					},
+					{
+						"name": "_attachments",
+						"type": "UTF8"
+					},
+					{
+						"name": "_ts",
+						"type": "INT32"
+					}
+				]
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/PolicyDF')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
 			]
 		}
 	]
