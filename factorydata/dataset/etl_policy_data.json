@@ -1,0 +1,233 @@
+{
+	"name": "etl_policy_data",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "policy.parquet",
+				"container": "odscontainer"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "CountryName",
+				"type": "UTF8"
+			},
+			{
+				"name": "CountryCode",
+				"type": "UTF8"
+			},
+			{
+				"name": "Jurisdiction",
+				"type": "UTF8"
+			},
+			{
+				"name": "Date",
+				"type": "DATE"
+			},
+			{
+				"name": "C1Schoolclosing",
+				"type": "INT32"
+			},
+			{
+				"name": "C1Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "C2Workplaceclosing",
+				"type": "INT32"
+			},
+			{
+				"name": "C2Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "C3Cancelpublicevents",
+				"type": "INT32"
+			},
+			{
+				"name": "C3Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "C4Restrictionsongatherings",
+				"type": "INT32"
+			},
+			{
+				"name": "C4Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "C5Closepublictransport",
+				"type": "INT32"
+			},
+			{
+				"name": "C5Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "C6Stayathomerequirements",
+				"type": "INT32"
+			},
+			{
+				"name": "C6Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "C7Restrictionsoninternalmovement",
+				"type": "INT32"
+			},
+			{
+				"name": "C7Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "C8Internationaltravelcontrols",
+				"type": "INT32"
+			},
+			{
+				"name": "E1Incomesupport",
+				"type": "INT32"
+			},
+			{
+				"name": "E1Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "E2Debtcontractrelief",
+				"type": "INT32"
+			},
+			{
+				"name": "E3Fiscalmeasures",
+				"type": "INT32"
+			},
+			{
+				"name": "E4Internationalsupport",
+				"type": "INT32"
+			},
+			{
+				"name": "H1Publicinformationcampaigns",
+				"type": "INT32"
+			},
+			{
+				"name": "H1Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "H2Testingpolicy",
+				"type": "INT32"
+			},
+			{
+				"name": "H3Contacttracing",
+				"type": "INT32"
+			},
+			{
+				"name": "H4Emergencyinvestmentinhealthcare",
+				"type": "INT32"
+			},
+			{
+				"name": "H5Investmentinvaccines",
+				"type": "INT32"
+			},
+			{
+				"name": "H6FacialCoverings",
+				"type": "INT32"
+			},
+			{
+				"name": "H6Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "H7Vaccinationpolicy",
+				"type": "INT32"
+			},
+			{
+				"name": "H7Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "H8Protectionofelderlypeople",
+				"type": "INT32"
+			},
+			{
+				"name": "H8Flag",
+				"type": "INT32"
+			},
+			{
+				"name": "M1Wildcard",
+				"type": "INT32"
+			},
+			{
+				"name": "StringencyIndex",
+				"type": "INT32"
+			},
+			{
+				"name": "StringencyIndexForDisplay",
+				"type": "INT32"
+			},
+			{
+				"name": "StringencyLegacyIndex",
+				"type": "INT32"
+			},
+			{
+				"name": "StringencyLegacyIndexForDisplay",
+				"type": "INT32"
+			},
+			{
+				"name": "GovernmentResponseIndex",
+				"type": "INT32"
+			},
+			{
+				"name": "GovernmentResponseIndexForDisplay",
+				"type": "INT32"
+			},
+			{
+				"name": "ContainmentHealthIndex",
+				"type": "INT32"
+			},
+			{
+				"name": "ContainmentHealthIndexForDisplay",
+				"type": "INT32"
+			},
+			{
+				"name": "EconomicSupportIndex",
+				"type": "INT32"
+			},
+			{
+				"name": "EconomicSupportIndexForDisplay",
+				"type": "INT32"
+			},
+			{
+				"name": "id",
+				"type": "UTF8"
+			},
+			{
+				"name": "_rid",
+				"type": "UTF8"
+			},
+			{
+				"name": "_self",
+				"type": "UTF8"
+			},
+			{
+				"name": "_etag",
+				"type": "UTF8"
+			},
+			{
+				"name": "_attachments",
+				"type": "UTF8"
+			},
+			{
+				"name": "_ts",
+				"type": "INT32"
+			}
+		]
+	}
+}
