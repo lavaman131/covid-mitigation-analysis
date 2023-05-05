@@ -54,7 +54,7 @@
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false,",
 				"     format: 'parquet') ~> OnPremCountry",
-				"AzureSQLCountry union(byName: true)~> country",
+				"AzureSQLCountry, OnPremCountry union(byName: true)~> country",
 				"country sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     input(",
