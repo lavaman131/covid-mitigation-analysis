@@ -810,6 +810,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
+						"fileName": "dbo.Covid19_Metrics.parquet",
 						"container": "azure-sql-db"
 					},
 					"compressionCodec": "snappy"
