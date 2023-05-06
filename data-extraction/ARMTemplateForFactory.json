@@ -2908,6 +2908,9 @@
 						},
 						{
 							"name": "select2"
+						},
+						{
+							"name": "filter1"
 						}
 					],
 					"scriptLines": [
@@ -2952,7 +2955,7 @@
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> OnPremCovid",
 						"AzureSQLMetrics, OnPremCovid union(byName: true)~> union1",
-						"select2 select(mapColumn(",
+						"filter1 select(mapColumn(",
 						"          CountryCode,",
 						"          Date,",
 						"          Confirmed,",
@@ -2960,7 +2963,7 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> cases",
-						"select2 select(mapColumn(",
+						"filter1 select(mapColumn(",
 						"          CountryCode,",
 						"          Date,",
 						"          Deaths,",
@@ -2968,7 +2971,7 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> deaths",
-						"select2 select(mapColumn(",
+						"filter1 select(mapColumn(",
 						"          CountryCode,",
 						"          Date,",
 						"          Recovered,",
@@ -2994,6 +2997,7 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select2",
+						"select2 filter(isNull(CountryCode) == false()) ~> filter1",
 						"recoveries sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
