@@ -16,6 +16,12 @@
 		},
 		"SqlServer1_connectionString": {
 			"value": ""
+		},
+		"SqlServer2_connectionString": {
+			"value": ""
+		},
+		"SqlServer3_connectionString": {
+			"value": ""
 		}
 	}
 }
