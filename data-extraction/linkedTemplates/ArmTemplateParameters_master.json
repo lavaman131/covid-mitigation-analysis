@@ -23,6 +23,12 @@
 		"SqlServer3_connectionString": {
 			"value": ""
 		},
+		"SqlServer4_connectionString": {
+			"value": ""
+		},
+		"SqlServer5_connectionString": {
+			"value": ""
+		},
 		"containerUri": {
 			"value": ""
 		},
