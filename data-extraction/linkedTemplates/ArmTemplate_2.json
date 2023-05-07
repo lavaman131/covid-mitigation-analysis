@@ -405,6 +405,446 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/Dates')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "dates.parquet",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "Date",
+						"type": "DATE"
+					},
+					{
+						"name": "DateKey",
+						"type": "INT32"
+					},
+					{
+						"name": "isWeekDay",
+						"type": "BOOLEAN"
+					},
+					{
+						"name": "DayOfWeek",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfMonth",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "DayOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "DayName",
+						"type": "UTF8"
+					},
+					{
+						"name": "WeekOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "WeekName",
+						"type": "UTF8"
+					},
+					{
+						"name": "MonthOfYear",
+						"type": "INT32"
+					},
+					{
+						"name": "MonthName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CalendarQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "CalendarQuarterName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CalendarYear",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalMonth",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalMonthName",
+						"type": "UTF8"
+					},
+					{
+						"name": "FiscalQuarter",
+						"type": "INT32"
+					},
+					{
+						"name": "FiscalQuarterName",
+						"type": "UTF8"
+					},
+					{
+						"name": "FiscalYear",
+						"type": "INT32"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Deaths')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "deaths.parquet",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Date",
+						"type": "DATE"
+					},
+					{
+						"name": "Deaths",
+						"type": "INT32"
+					},
+					{
+						"name": "Deaths_Change",
+						"type": "INT32"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Cases')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "cases.parquet",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Date",
+						"type": "DATE"
+					},
+					{
+						"name": "Confirmed",
+						"type": "INT32"
+					},
+					{
+						"name": "Confirmed_Change",
+						"type": "INT32"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Policies')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "policy.parquet",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "CountryName",
+						"type": "UTF8"
+					},
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Jurisdiction",
+						"type": "UTF8"
+					},
+					{
+						"name": "Date",
+						"type": "DATE"
+					},
+					{
+						"name": "C1_School_closing",
+						"type": "INT32"
+					},
+					{
+						"name": "C1_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C2_Workplace_closing",
+						"type": "INT32"
+					},
+					{
+						"name": "C2_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C3_Cancel_public_events",
+						"type": "INT32"
+					},
+					{
+						"name": "C3_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C4_Restrictions_on_gatherings",
+						"type": "INT32"
+					},
+					{
+						"name": "C4_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C5_Close_public_transport",
+						"type": "INT32"
+					},
+					{
+						"name": "C5_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C6_Stay_at_home_requirements",
+						"type": "INT32"
+					},
+					{
+						"name": "C6_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C7_Restrictions_on_internal_movement",
+						"type": "INT32"
+					},
+					{
+						"name": "C7_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "C8_International_travel_controls",
+						"type": "INT32"
+					},
+					{
+						"name": "E1_Income_support",
+						"type": "INT32"
+					},
+					{
+						"name": "E1_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "E2_Debt_contract_relief",
+						"type": "INT32"
+					},
+					{
+						"name": "E3_Fiscal_measures",
+						"type": "INT32"
+					},
+					{
+						"name": "E4_International_support",
+						"type": "INT32"
+					},
+					{
+						"name": "H1_Public_information_campaigns",
+						"type": "INT32"
+					},
+					{
+						"name": "H1_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "H2_Testing_policy",
+						"type": "INT32"
+					},
+					{
+						"name": "H3_Contact_tracing",
+						"type": "INT32"
+					},
+					{
+						"name": "H4_Emergency_investment_in_healthcare",
+						"type": "INT32"
+					},
+					{
+						"name": "H5_Investment_in_vaccines",
+						"type": "INT32"
+					},
+					{
+						"name": "H6_Facial_Coverings",
+						"type": "INT32"
+					},
+					{
+						"name": "H6_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "H7_Vaccination_policy",
+						"type": "INT32"
+					},
+					{
+						"name": "H7_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "H8_Protection_of_elderly_people",
+						"type": "INT32"
+					},
+					{
+						"name": "H8_Flag",
+						"type": "INT32"
+					},
+					{
+						"name": "M1_Wildcard",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyLegacyIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "StringencyLegacyIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "GovernmentResponseIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "GovernmentResponseIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "ContainmentHealthIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "ContainmentHealthIndexForDisplay",
+						"type": "INT32"
+					},
+					{
+						"name": "EconomicSupportIndex",
+						"type": "INT32"
+					},
+					{
+						"name": "EconomicSupportIndexForDisplay",
+						"type": "INT32"
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Countries')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "Parquet",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "country.parquet",
+						"container": "odscontainer"
+					},
+					"compressionCodec": "snappy"
+				},
+				"schema": [
+					{
+						"name": "Country",
+						"type": "UTF8"
+					},
+					{
+						"name": "CountryCode",
+						"type": "UTF8"
+					},
+					{
+						"name": "Latitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					},
+					{
+						"name": "Longitude",
+						"type": "DECIMAL",
+						"precision": 10,
+						"scale": 5
+					}
+				]
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/AzureSQLExtraction')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1075,13 +1515,16 @@
 					],
 					"transformations": [
 						{
+							"name": "join2"
+						},
+						{
+							"name": "join3"
+						},
+						{
 							"name": "select1"
 						},
 						{
-							"name": "union1"
-						},
-						{
-							"name": "join1"
+							"name": "RemoveDuplicates"
 						},
 						{
 							"name": "select2"
@@ -1201,26 +1644,90 @@
 						"     validateSchema: false,",
 						"     ignoreNoFilesFound: false,",
 						"     format: 'parquet') ~> AzureSQLDates",
-						"Dates select(mapColumn(",
-						"          Date",
-						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select1",
-						"OnPremDates, AzureSQLDates union(byName: true)~> union1",
-						"select1, select2 join(select1@Date == select2@Date,",
+						"OnPremDates, AzureSQLDates join(OnPremDates@FullDate == AzureSQLDates@FullDate,",
 						"     joinType:'inner',",
 						"     matchType:'exact',",
 						"     ignoreSpaces: false,",
-						"     broadcast: 'auto')~> join1",
-						"union1 select(mapColumn(",
-						"          DateKey,",
-						"          Date = FullDate,",
+						"     broadcast: 'auto')~> join2",
+						"join2, Dates join(OnPremDates@FullDate == Date,",
+						"     joinType:'inner',",
+						"     matchType:'exact',",
+						"     ignoreSpaces: false,",
+						"     broadcast: 'auto')~> join3",
+						"join3 select(mapColumn(",
+						"          DateKey = OnPremDates@DateKey,",
+						"          FullDate = OnPremDates@FullDate,",
+						"          isWeekDay = OnPremDates@isWeekDay,",
+						"          DayOfWeek = OnPremDates@DayOfWeek,",
+						"          DayOfMonth = OnPremDates@DayOfMonth,",
+						"          DayOfQuarter = OnPremDates@DayOfQuarter,",
+						"          DayOfYear = OnPremDates@DayOfYear,",
+						"          DayName = OnPremDates@DayName,",
+						"          WeekOfYear = OnPremDates@WeekOfYear,",
+						"          WeekName = OnPremDates@WeekName,",
+						"          MonthOfYear = OnPremDates@MonthOfYear,",
+						"          MonthName = OnPremDates@MonthName,",
+						"          CalendarQuarter = OnPremDates@CalendarQuarter,",
+						"          CalendarQuarterName = OnPremDates@CalendarQuarterName,",
+						"          CalendarYear = OnPremDates@CalendarYear,",
+						"          FiscalMonth = OnPremDates@FiscalMonth,",
+						"          FiscalMonthName = OnPremDates@FiscalMonthName,",
+						"          FiscalQuarter = OnPremDates@FiscalQuarter,",
+						"          FiscalQuarterName = OnPremDates@FiscalQuarterName,",
+						"          FiscalYear = OnPremDates@FiscalYear,",
+						"          DateKey = AzureSQLDates@DateKey,",
+						"          FullDate = AzureSQLDates@FullDate,",
+						"          isWeekDay = AzureSQLDates@isWeekDay,",
+						"          DayOfWeek = AzureSQLDates@DayOfWeek,",
+						"          DayOfMonth = AzureSQLDates@DayOfMonth,",
+						"          DayOfQuarter = AzureSQLDates@DayOfQuarter,",
+						"          DayOfYear = AzureSQLDates@DayOfYear,",
+						"          DayName = AzureSQLDates@DayName,",
+						"          WeekOfYear = AzureSQLDates@WeekOfYear,",
+						"          WeekName = AzureSQLDates@WeekName,",
+						"          MonthOfYear = AzureSQLDates@MonthOfYear,",
+						"          MonthName = AzureSQLDates@MonthName,",
+						"          CalendarQuarter = AzureSQLDates@CalendarQuarter,",
+						"          CalendarQuarterName = AzureSQLDates@CalendarQuarterName,",
+						"          CalendarYear = AzureSQLDates@CalendarYear,",
+						"          FiscalMonth = AzureSQLDates@FiscalMonth,",
+						"          FiscalMonthName = AzureSQLDates@FiscalMonthName,",
+						"          FiscalQuarter = AzureSQLDates@FiscalQuarter,",
+						"          FiscalQuarterName = AzureSQLDates@FiscalQuarterName,",
+						"          FiscalYear = AzureSQLDates@FiscalYear",
+						"     ),",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> select1",
+						"select1 aggregate(groupBy(DayName,",
+						"          FullDate,",
 						"          isWeekDay,",
 						"          DayOfWeek,",
 						"          DayOfMonth,",
 						"          DayOfQuarter,",
 						"          DayOfYear,",
+						"          WeekOfYear,",
+						"          WeekName,",
+						"          MonthOfYear,",
+						"          MonthName,",
+						"          CalendarQuarter,",
+						"          CalendarQuarterName,",
+						"          CalendarYear,",
+						"          FiscalMonth,",
+						"          FiscalMonthName,",
+						"          FiscalQuarter,",
+						"          FiscalQuarterName,",
+						"          FiscalYear,",
+						"          DateKey),",
+						"     DateFreq = count(FullDate)) ~> RemoveDuplicates",
+						"RemoveDuplicates select(mapColumn(",
+						"          DateKey,",
 						"          DayName,",
+						"          FullDate,",
+						"          isWeekDay,",
+						"          DayOfWeek,",
+						"          DayOfMonth,",
+						"          DayOfQuarter,",
+						"          DayOfYear,",
 						"          WeekOfYear,",
 						"          WeekName,",
 						"          MonthOfYear,",
@@ -1236,7 +1743,7 @@
 						"     ),",
 						"     skipDuplicateMapInputs: true,",
 						"     skipDuplicateMapOutputs: true) ~> select2",
-						"join1 sink(allowSchemaDrift: true,",
+						"select2 sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     input(",
 						"          CountryCode as string,",
