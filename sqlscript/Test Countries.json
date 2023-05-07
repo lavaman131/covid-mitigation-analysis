@@ -1,0 +1,17 @@
+{
+	"name": "Test Countries",
+	"properties": {
+		"content": {
+			"query": "SELECT DISTINCT CountryCode\n    FROM dbo.dimCases",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "covid19",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
