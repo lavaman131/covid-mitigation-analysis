@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzureSqlSource",
+						"type": "SqlServerSource",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -41,7 +41,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "AzureSqlTable1",
+						"referenceName": "SqlServerCountry",
 						"type": "DatasetReference"
 					}
 				],
@@ -98,7 +98,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SqlServerTable4",
+						"referenceName": "SqlServerMetrics",
 						"type": "DatasetReference"
 					}
 				],
@@ -155,7 +155,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SqlServerTable3",
+						"referenceName": "SqlServerDates",
 						"type": "DatasetReference"
 					}
 				],

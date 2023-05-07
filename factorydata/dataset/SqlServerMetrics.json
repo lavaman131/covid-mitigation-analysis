@@ -1,5 +1,5 @@
 {
-	"name": "SqlServerTable4",
+	"name": "SqlServerMetrics",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "SqlServer3",
